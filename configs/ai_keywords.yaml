@@ -1,0 +1,69 @@
+english:
+  role_keywords:
+    - AI Engineer
+    - ML Engineer
+    - Machine Learning Engineer
+    - LLM Engineer
+    - GenAI Engineer
+    - AI Researcher
+    - ML Researcher
+    - Data Scientist
+    - Applied Scientist
+    - AI Scientist
+    - Data Analyst
+    - AI Analyst
+    - Business Analyst
+  skill_keywords:
+    - Python
+    - SQL
+    - PyTorch
+    - TensorFlow
+    - scikit-learn
+    - LLM
+    - RAG
+    - NLP
+    - Computer Vision
+    - MLOps
+    - Docker
+    - Kubernetes
+    - AWS
+    - GCP
+    - Azure
+    - LangChain
+    - LangGraph
+    - vector database
+    - model serving
+korean:
+  role_keywords:
+    - AI 엔지니어
+    - 인공지능 엔지니어
+    - 머신러닝 엔지니어
+    - ML 엔지니어
+    - LLM 엔지니어
+    - 생성형 AI 엔지니어
+    - AI 리서처
+    - AI 연구원
+    - 머신러닝 연구원
+    - 데이터 사이언티스트
+    - 데이터 과학자
+    - AI 사이언티스트
+    - 데이터 분석가
+    - AI 분석가
+    - 비즈니스 분석가
+  skill_keywords:
+    - 파이썬
+    - SQL
+    - 딥러닝
+    - 머신러닝
+    - 자연어처리
+    - 컴퓨터 비전
+    - 추천 시스템
+    - 생성형 AI
+    - 대규모 언어모델
+    - 검색 증강 생성
+    - 데이터 분석
+    - 데이터 시각화
+    - 모델 서빙
+    - 클라우드
+    - 쿠버네티스
+

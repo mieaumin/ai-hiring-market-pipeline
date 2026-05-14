@@ -1,0 +1,42 @@
+role_groups:
+  - AI Engineer
+  - AI Researcher
+  - AI Scientist
+  - AI Analyst
+
+skills:
+  - Python
+  - SQL
+  - PyTorch
+  - TensorFlow
+  - scikit-learn
+  - LLM
+  - RAG
+  - NLP
+  - Computer Vision
+  - MLOps
+  - Docker
+  - Kubernetes
+  - AWS
+  - GCP
+  - Azure
+
+seniority:
+  - Intern
+  - Junior
+  - Mid
+  - Senior
+  - Lead
+  - Principal
+
+domains:
+  - Finance
+  - Healthcare
+  - Commerce
+  - Manufacturing
+  - Mobility
+  - Gaming
+  - Education
+  - Platform
+  - SaaS
+

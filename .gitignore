@@ -1,0 +1,19 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.env
+.env.*
+!.env.example
+
+# Local runtime artifacts
+data/raw/*.jsonl
+data/raw/*.html
+data/logs/*.log
+
+# Keep tracked CSV templates and starter outputs.
+*.tmp
+*.bak
+

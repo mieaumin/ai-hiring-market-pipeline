@@ -1,0 +1,59 @@
+signals:
+  hiring_signal:
+    max_score: 30
+    description: Evidence that the company currently hires or has recently hired AI, ML, data, or research talent.
+    examples:
+      - AI job posting exists
+      - Data or ML role exists
+      - Official career page exists
+      - AI hiring history is visible
+  business_ai_signal:
+    max_score: 25
+    description: Evidence that AI or data is part of the company's product, service, or business model.
+    examples:
+      - AI product page
+      - LLM, RAG, ML, NLP, CV, recommendation, prediction, or automation in product copy
+      - Data platform or AI solution positioning
+  tech_signal:
+    max_score: 20
+    description: Evidence of technical depth or AI engineering/research activity.
+    examples:
+      - Tech blog
+      - Public GitHub
+      - Research paper or patent
+      - MLOps, model serving, or data platform references
+  market_signal:
+    max_score: 15
+    description: Evidence that the company's market context supports AI hiring demand.
+    examples:
+      - Funding or growth signal
+      - Government or public AI project
+      - Enterprise AI transformation
+      - AI-heavy industry domain
+  evidence_quality:
+    max_score: 10
+    description: Reliability, freshness, accessibility, and reviewability of evidence.
+    examples:
+      - Official source
+      - Public URL
+      - Recent evidence
+      - Clear summary
+
+priority_tiers:
+  high:
+    min_score: 75
+    description: Strong candidate for source registry review.
+  medium:
+    min_score: 50
+    description: Candidate needs more evidence or manual review.
+  low:
+    min_score: 0
+    description: Weak candidate unless new evidence is found.
+
+validation_statuses:
+  - seeded
+  - needs_review
+  - candidate
+  - approved_for_source_discovery
+  - rejected
+

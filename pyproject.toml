@@ -1,0 +1,19 @@
+[project]
+name = "ai-hiring-market-jd-pipeline"
+version = "0.1.0"
+description = "Company-first legal MVP data pipeline for AI hiring market JD discovery and normalization."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "requests",
+  "beautifulsoup4",
+  "pandas",
+  "pyyaml",
+  "python-dotenv",
+  "tqdm",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
