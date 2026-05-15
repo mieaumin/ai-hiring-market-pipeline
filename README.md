@@ -121,7 +121,7 @@ Phase 5 — Future JD-Resume Matching:
 ## Folder Structure
 
 ```text
-ai-hiring-market-jd-pipeline/
+ai-hiring-market-pipeline/
   README.md
   .gitignore
   requirements.txt
