@@ -48,6 +48,13 @@ def test_jd_cannot_pass_quality_gate_if_source_approval_is_invalid():
     assert "source_approval_invalid" in result.reasons
 
 
+def test_jd_without_title_fails_quality_gate():
+    result = evaluate_quality_gate(_jd_record(job_title=""))
+
+    assert not result.passed
+    assert any(reason.startswith("missing_required_fields") for reason in result.reasons)
+
+
 def test_grades_b_c_d_need_approved_source_status_for_jd_quality_gate():
     for grade in ["B", "C", "D"]:
         assert source_approval_is_valid(
@@ -60,3 +67,11 @@ def test_grade_e_and_f_sources_never_pass_jd_source_approval():
         assert not source_approval_is_valid(
             _jd_record(source_grade=grade, source_approval_status="approved")
         )
+
+
+def test_duplicate_jd_fails_quality_gate_after_first_seen_key():
+    seen = {"example-ai-engineer"}
+    result = evaluate_quality_gate(_jd_record(), seen_duplicate_keys=seen)
+
+    assert not result.passed
+    assert "duplicate_jd" in result.reasons

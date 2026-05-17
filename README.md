@@ -14,7 +14,7 @@ This project is not designed for massive crawling. It is designed around:
 - explainability
 - conservative collection policy
 
-No crawler, scraper, API integration, browser automation, LLM API integration, Google Sheets API integration, CAPTCHA bypass, anti-bot evasion, login automation, or live collection is implemented in the current design phase.
+The repository now includes a first safe approved-source-only collection runner. It does not perform broad crawling, browser automation, LLM API integration, Google Sheets API integration, CAPTCHA bypass, anti-bot evasion, login automation, IP rotation, or access-control bypass. If `master/source_registry_master.csv` has no crawl-eligible approved source, collection is skipped.
 
 ## Final Pipeline Architecture
 
@@ -252,6 +252,34 @@ approved source registry
 -> raw JD storage
 ```
 
+Approved-source-only collection is implemented through:
+
+- `src/registry/collection_guard.py`
+- `src/collectors/base_collector.py`
+- `src/collectors/public_html_collector.py`
+- `src/collectors/work24_public_collector.py`
+- `src/collectors/company_career_collector.py`
+- `src/collectors/ats_public_collector.py`
+- `scripts/run_approved_collection.py`
+
+The runner reads `master/source_registry_master.csv` and refuses to collect unless all guard checks pass:
+
+- `decision = approved`
+- `source_grade` is A, B, C, or D
+- `approval_status` is `not_required` or `approved`
+- `robots_target_path_status` is `allowed` or `partially_allowed`
+- `terms_collection_policy` is `allowed` or `limited`
+- no login, CAPTCHA, or high anti-bot risk is present
+- `public_html_access = true`
+
+If no approved crawl-eligible source exists, the runner prints:
+
+```text
+No approved crawl-eligible sources found. Collection skipped.
+```
+
+and no network collection is attempted.
+
 Collection policy:
 
 - conservative request rate
@@ -260,20 +288,22 @@ Collection policy:
 - no login automation
 - no hidden endpoints
 - no prohibited scraping
+- no collection from Grade E or Grade F sources
+- no collection from pending, rejected, or expired approvals
 
 Collectors:
 
 - `base_collector.py`
-- `work24_collector.py`
-- `greenhouse_collector.py`
-- `lever_collector.py`
-- `ashby_collector.py`
+- `public_html_collector.py`
+- `work24_public_collector.py`
+- `ats_public_collector.py`
 - `company_career_collector.py`
 
 Outputs:
 
 - `data/raw/raw_jds.csv`
-- `runtime/jd_collection_log.csv`
+- `data/logs/collection_log.csv`
+- `runtime/errors.csv`
 
 ## Phase 4 — JD Quality Filtering and Staging
 
@@ -492,4 +522,24 @@ Validate existing local CSV outputs:
 python scripts/run_validation.py
 ```
 
-`scripts/run_collection.py` is intentionally conservative in this MVP scaffold. It does not run broad crawling. It exists only as a future entry point for approved sources.
+Validate pipeline templates:
+
+```bash
+python scripts/validate_pipeline_templates.py
+```
+
+Run approved-source-only collection:
+
+```bash
+python scripts/run_approved_collection.py
+```
+
+If no approved crawl-eligible source exists in `master/source_registry_master.csv`, the command skips collection safely.
+
+Run the local JD quality gate:
+
+```bash
+python scripts/run_quality_gate_dryrun.py
+```
+
+This evaluates `data/raw/raw_jds.csv`, writes valid rows to `staging/jd_staging.csv`, and writes failures to `runtime/jd_validation_errors.csv`.

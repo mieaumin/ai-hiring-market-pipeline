@@ -20,9 +20,8 @@ class WorknetCollector(BaseCollector):
             raise ValueError("WORKNET_API_KEY is not set.")
         raise NotImplementedError("WorkNet endpoint must be added after source review.")
 
-    def parse(self, payload: str) -> list[dict]:
+    def parse(self, payload: str, source_row: dict | None = None) -> list[dict]:
         raise NotImplementedError("WorkNet response parsing is not implemented yet.")
 
-    def normalize(self, records) -> list[dict]:
+    def normalize(self, records, source_row: dict | None = None) -> list[dict]:
         raise NotImplementedError("WorkNet normalization is not implemented yet.")
-

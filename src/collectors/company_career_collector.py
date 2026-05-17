@@ -1,22 +1,21 @@
-"""Conservative public company career page collector skeleton."""
+"""Conservative public company career page collector."""
 
 from __future__ import annotations
 
-from bs4 import BeautifulSoup
+from typing import Iterable
 
-from src.collectors.base_collector import BaseCollector
+from src.collectors.public_html_collector import PublicHtmlCollector
 
 
-class CompanyCareerCollector(BaseCollector):
+class CompanyCareerCollector(PublicHtmlCollector):
     """HTML career page skeleton for carefully reviewed C-grade sources."""
 
-    def parse(self, payload: str) -> list[dict]:
-        soup = BeautifulSoup(payload, "html.parser")
-        # TODO: Implement source-specific parsing only after manual source review.
-        title = soup.title.get_text(strip=True) if soup.title else ""
-        return [{"page_title": title, "html_text": soup.get_text(" ", strip=True)}]
+    collector_name = "company_career"
 
-    def normalize(self, records) -> list[dict]:
-        # TODO: Source-specific selectors are required before production use.
-        return []
+    def parse(self, payload: str, source_row: dict | None = None) -> list[dict]:
+        # TODO: Add source-specific job card selectors only after manual review.
+        return super().parse(payload, source_row)
 
+    def normalize(self, records: Iterable[dict], source_row: dict | None = None) -> list[dict]:
+        # TODO: Add source-specific field mapping only after manual review.
+        return super().normalize(records, source_row)

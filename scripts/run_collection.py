@@ -1,19 +1,19 @@
-"""Future collection entry point for approved sources only.
-
-This MVP scaffold intentionally does not run automatic collection.
-"""
+"""Compatibility wrapper for approved-source-only collection."""
 
 from __future__ import annotations
 
+from pathlib import Path
+import sys
 
-def main() -> None:
-    print(
-        "Collection is not enabled in this scaffold. Review sources in "
-        "runtime/source_registry.csv and implement only A, B, or carefully "
-        "reviewed C collectors."
-    )
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
+from scripts.run_approved_collection import main as run_approved_collection
+
+
+def main() -> int:
+    return run_approved_collection()
 
 
 if __name__ == "__main__":
-    main()
-
+    raise SystemExit(main())

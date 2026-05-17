@@ -32,7 +32,10 @@ Public company career pages may be used only after robots.txt and terms are revi
 
 Before adding a new collector, the source must be entered into the source registry and reviewed. The registry decision determines whether the source is allowed for MVP collection.
 
+The approved-source-only runner can collect only from `master/source_registry_master.csv` rows that pass the collection guard. A source is blocked if it is not approved, has pending/rejected/expired approval, is Grade E or F, has robots.txt or Terms restrictions, requires login or CAPTCHA, has high anti-bot risk, lacks public HTML access, or has unresolved API approval requirements.
+
+If no approved crawl-eligible source exists, collection is skipped. The runner must not manually mark sources as approved, reinterpret unclear policy, or collect from risky sources.
+
 ## Future JD-Resume Matching
 
 Ethical collection matters because future matching models depend on trustworthy data. Poorly sourced or policy-violating data can harm research quality and make the matching pipeline hard to defend.
-

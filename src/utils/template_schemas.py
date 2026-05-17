@@ -175,6 +175,7 @@ TEMPLATE_FILES = {
     "staging/jd_staging.csv": JD_COLUMNS,
     "master/jd_master_dataset.csv": JD_COLUMNS,
     "runtime/jd_collection_log.csv": JD_COLLECTION_LOG_COLUMNS,
+    "data/logs/collection_log.csv": JD_COLLECTION_LOG_COLUMNS,
     "runtime/jd_validation_errors.csv": JD_VALIDATION_ERRORS_COLUMNS,
     "runtime/quality_gate_report.csv": QUALITY_GATE_REPORT_COLUMNS,
     "runtime/runs.csv": RUNS_COLUMNS,
