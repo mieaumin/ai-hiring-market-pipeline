@@ -23,26 +23,62 @@ This means the project starts by asking:
 
 Only after this company candidate pool is reviewed should the project evaluate job posting sources or collect public JDs.
 
+## Phase 0 — Korean Job Source Registry
+
+The current phase is Korean job source registry construction. This phase does not implement crawling, scraping, live API integration, browser automation, Google Sheets integration, or live data collection.
+
+Approved sources must pass compliance review before they can be used in any future JD collection phase. A source is not approved if robots.txt, Terms of Service, login requirements, CAPTCHA, anti-bot controls, API approval requirements, or lack of public HTML access block the planned collection method.
+
+Phase 0 output files:
+
+- `runtime/raw_job_site_discovery.csv`
+- `staging/job_site_registry_staging.csv`
+- `runtime/site_policy_evidence.csv`
+- `config/job_site_candidates.csv`
+- `master/job_source_registry.csv`
+
+## Phase 1 — Company Discovery Registry
+
+Company discovery is a recall-first registry construction workflow. Raw company candidates are collected broadly, but they are not approved companies.
+
+Each company requires traceable evidence before promotion. Evidence is scored across hiring, business AI, technical, market, research, and evidence quality signals. Only reviewed companies move to `master/company_registry_master.csv`.
+
+This phase prepares evidence-backed company candidates for later source discovery and JD collection. It does not collect JDs, crawl company websites, run scrapers, call APIs, automate browsers, use LLM APIs, or perform live collection.
+
+Phase 1 output files:
+
+- `runtime/raw_company_discovery.csv`
+- `runtime/company_candidates.csv`
+- `runtime/company_evidence.csv`
+- `staging/company_registry_staging.csv`
+- `master/company_registry_master.csv`
+
 ## Pipeline Order
 
 ```text
-Phase 1 — Company Discovery
+Phase 0 — Korean Job Source Registry
 ↓
-Phase 2 — Source Registry
+Phase 1 — Company Discovery Registry
 ↓
-Phase 3 — JD Collection
+Phase 2 — Source Discovery and Verification
 ↓
-Phase 4 — JD Normalization and Labeling
+Phase 3 — JD Collection from Approved Sources
 ↓
-Phase 5 — Future JD-Resume Matching
+Phase 4 — JD Quality Filtering and Staging
+↓
+Phase 5 — JD Master Dataset
+↓
+Phase 6 — JD-Resume Matching Research
 ```
 
 Expanded operating flow:
 
 ```text
-company seed discovery
--> source discovery
--> source verification
+raw company discovery
+-> company evidence review
+-> company staging
+-> approved company registry
+-> source discovery and verification
 -> evidence collection
 -> JD staging
 -> quality gate
@@ -90,31 +126,36 @@ Only A, B, and carefully reviewed C sources should be used.
 
 ## MVP Scope
 
-Phase 1 — Company Discovery:
+Phase 1 — Company Discovery Registry:
 
-- Build a candidate company pool related to AI hiring.
-- Collect evidence signals showing whether a company is likely hiring AI talent.
-- Score companies using structured signal categories.
-- Save validated company candidate datasets.
+- Build a recall-first company candidate pool related to AI hiring.
+- Collect traceable evidence for each company candidate.
+- Score evidence using structured signal categories.
+- Promote only reviewed companies to the master company registry.
 
-Phase 2 — Source Registry:
+Phase 2 — Source Discovery and Verification:
 
 - Identify each company's job posting source.
 - Evaluate API availability, public access, robots.txt, login requirement, anti-bot risk, and data quality.
 - Approve only sources that meet the legal and quality policy.
 
-Phase 3 — JD Collection:
+Phase 3 — JD Collection from Approved Sources:
 
 - Collect public AI-related job descriptions only from approved sources.
 - Use safe public API or public ATS endpoint skeletons.
 
-Phase 4 — JD Processing:
+Phase 4 — JD Quality Filtering and Staging:
 
 - Normalize collected JDs into a common schema.
 - Filter AI-related roles.
-- Save raw, cleaned, and validated datasets.
+- Save raw, cleaned, staged, and validated datasets.
 
-Phase 5 — Future JD-Resume Matching:
+Phase 5 — JD Master Dataset:
+
+- Promote only quality-checked JDs into the master dataset.
+- Preserve traceability back to approved sources and evidence.
+
+Phase 6 — JD-Resume Matching Research:
 
 - Connect structured JDs to AI resume data using a shared role and skill taxonomy.
 
@@ -134,7 +175,10 @@ ai-hiring-market-pipeline/
     logs/
 
   docs/
+    phase0_job_source_registry.md
     phase1_company_discovery.md
+    company_screening_policy.md
+    source_compliance_review.md
     source_selection_criteria.md
     legal_and_ethics_policy.md
     jd_schema.md
@@ -149,9 +193,23 @@ ai-hiring-market-pipeline/
     ai_keywords.yaml
     taxonomy_v1.yaml
 
+  config/
+    job_site_candidates.csv
+
   runtime/
+    raw_company_discovery.csv
     company_candidates.csv
     company_evidence.csv
+    raw_job_site_discovery.csv
+    site_policy_evidence.csv
+
+  staging/
+    company_registry_staging.csv
+    job_site_registry_staging.csv
+
+  master/
+    company_registry_master.csv
+    job_source_registry.csv
 
   src/
     company_discovery/
