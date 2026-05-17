@@ -4,11 +4,64 @@ Every job posting source must pass strict screening before any collector can be 
 
 This project follows a Biz-Voyager-inspired broad discovery -> evidence review -> screening -> staging -> master workflow, but uses stricter legal, policy, and approval gates before any JD collection.
 
+## Korean Job-Site Discovery Comes First
+
+The project now starts with Phase 0 Korean Job-Site Discovery and Phase 0.5 Job-Site Evidence Review and Source Screening.
+
+Phase 0 discovers possible Korean job posting websites using Korean search keywords, related keywords, public directories, government or public portals, curated articles, existing known sources, and allowed search APIs where policy permits.
+
+Discovered job sites are not automatically usable. Discovery only creates raw candidates for review.
+
+## Source State Definitions
+
+Raw discovered site:
+A possible job posting website recorded in `runtime/raw_job_site_discovery.csv`. It has not been reviewed and cannot be used for JD collection.
+
+Screened site:
+A discovered site with evidence rows and a screening result in `runtime/site_screening_results.csv`. It may still be `needs_review`, `needs_legal_review`, `limited`, or `rejected`.
+
+Approved source:
+A screened source promoted into a master registry only after legal, policy, and technical evidence supports use.
+
+Company-specific source:
+A later Phase 2/3 source that maps an approved or relevant company to its official career page, ATS page, or other company-specific job source. This is not the same as broad Phase 0 job-site discovery.
+
+## Korean Job-Site Screening Rules
+
+Before a discovered site can be considered usable, reviewers must check:
+
+- robots.txt
+- Terms of Service
+- API requirements
+- login requirements
+- CAPTCHA requirements
+- anti-bot risk
+- public HTML access
+- ATS/API signals
+- reuse restrictions
+- copyright and database-right risks
+
+Technically accessible sites can still be rejected when policy, reuse, access, or legal risks are too high.
+
+## Phase 0.5 Site-Screening Grades
+
+For Korean job-site screening:
+
+- A = official API available
+- B = public ATS/API endpoint available
+- C = public career/job page with acceptable robots.txt and Terms of Service
+- D = unclear policy or general scraping needed
+- E = login/CAPTCHA/anti-bot/prohibited collection
+- F = unusable or blocked
+
+Only A, B, and carefully reviewed C can be approved. D must require manual or legal review. E and F must be rejected.
+
 ## Required Flow
 
 ```text
 raw_job_site_discovery
 -> site_policy_evidence
+-> site_screening_results
 -> job_site_registry_staging
 -> site_screening
 -> master/job_source_registry
@@ -74,4 +127,3 @@ If policy or access is unclear, assign Grade E and reject it for the MVP unless 
 - Header or browser behavior spoofing for evasion
 - Browser automation for bypassing controls
 - Any collection that violates robots.txt, site terms, approval requirements, or access restrictions
-

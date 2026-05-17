@@ -1,0 +1,111 @@
+scraping_prohibited:
+  korean:
+    - 스크래핑 금지
+    - 크롤링 금지
+    - 데이터 수집 금지
+    - 무단 수집 금지
+    - 자동 수집 금지
+  english:
+    - scraping prohibited
+    - crawling prohibited
+    - data scraping is prohibited
+    - no scraping
+    - unauthorized scraping
+
+automated_collection_prohibited:
+  korean:
+    - 자동화된 수집 금지
+    - 자동 접근 금지
+    - 자동화 도구 사용 금지
+    - 대량 수집 금지
+  english:
+    - automated collection prohibited
+    - automated access prohibited
+    - no automated means
+    - bulk collection prohibited
+
+bot_prohibited:
+  korean:
+    - 봇 사용 금지
+    - 로봇 사용 금지
+    - 스파이더 사용 금지
+  english:
+    - bots prohibited
+    - robots prohibited
+    - spiders prohibited
+    - crawler prohibited
+
+redistribution_prohibited:
+  korean:
+    - 재배포 금지
+    - 제3자 제공 금지
+    - 전재 금지
+  english:
+    - redistribution prohibited
+    - no redistribution
+    - may not redistribute
+    - third-party distribution prohibited
+
+commercial_use_prohibited:
+  korean:
+    - 상업적 이용 금지
+    - 영리 목적 이용 금지
+  english:
+    - commercial use prohibited
+    - no commercial use
+    - non-commercial use only
+
+api_required:
+  korean:
+    - API 승인 필요
+    - API 사용 신청
+    - 사전 승인 필요
+  english:
+    - API approval required
+    - API key required
+    - prior approval required
+    - application required
+
+login_required:
+  korean:
+    - 로그인 필요
+    - 회원가입 필요
+    - 회원 전용
+  english:
+    - login required
+    - sign in required
+    - registration required
+    - members only
+
+captcha:
+  korean:
+    - 보안문자
+    - 캡차
+    - 자동입력 방지
+  english:
+    - captcha
+    - recaptcha
+    - hcaptcha
+    - verify you are human
+
+anti_bot:
+  korean:
+    - 비정상 접근
+    - 접근 차단
+    - 자동화 차단
+    - 봇 탐지
+  english:
+    - abnormal access
+    - access denied
+    - bot detection
+    - anti-bot
+    - unusual traffic
+
+robots_disallow:
+  korean:
+    - Disallow
+    - 접근 제한
+  english:
+    - Disallow
+    - disallowed by robots.txt
+    - user-agent

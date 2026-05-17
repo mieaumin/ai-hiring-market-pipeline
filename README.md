@@ -4,7 +4,7 @@ Biz-Voyager-style AI hiring market data pipeline with stricter source compliance
 
 The long-term goal is to legally collect, validate, normalize, structure, and prepare AI-related job descriptions (JDs) from approved sources so they can later be matched with AI candidate resumes.
 
-Current priority: build the Korean job-site universe first, before company discovery, company career-page discovery, or JD collection.
+Current priority: build the Korean job-site universe first, then screen those sites, before company discovery, company career-page discovery, or JD collection.
 
 This project is not designed for massive crawling. It is designed around:
 
@@ -21,60 +21,61 @@ The repository includes a first safe approved-source-only collection runner, but
 ## Final Pipeline Architecture
 
 ```text
-Phase 0 — Korean Job Site Registry
+Phase 0 — Korean Job-Site Discovery
 ↓
-Phase 1 — Company Discovery Registry
+Phase 0.5 — Job-Site Evidence Review and Source Screening
 ↓
-Phase 2 — Source Discovery and Verification
+Phase 1 — Company Discovery
 ↓
-Phase 3 — JD Collection
+Phase 2 — Company Source Discovery
 ↓
-Phase 4 — JD Quality Filtering and Staging
+Phase 3 — Source Verification
 ↓
-Phase 5 — JD Master Dataset
+Phase 4 — JD Collection
 ↓
-Phase 6 — JD-Resume Matching Research
+Phase 5 — JD Normalization and Labeling
+↓
+Phase 6 — Future JD-Resume Matching
 ```
 
 ```mermaid
 flowchart TD
-  P0["Phase 0: Korean Job Site Registry"]
-  P1["Phase 1: Company Discovery Registry"]
-  P2["Phase 2: Source Discovery and Verification"]
-  P3["Phase 3: JD Collection"]
-  P4["Phase 4: JD Quality Filtering and Staging"]
-  P5["Phase 5: JD Master Dataset"]
-  P6["Phase 6: JD-Resume Matching Research"]
+  P0["Phase 0: Korean Job-Site Discovery"]
+  P05["Phase 0.5: Evidence Review and Site Screening"]
+  P1["Phase 1: Company Discovery"]
+  P2["Phase 2: Company Source Discovery"]
+  P3["Phase 3: Source Verification"]
+  P4["Phase 4: JD Collection"]
+  P5["Phase 5: JD Normalization and Labeling"]
+  P6["Phase 6: Future JD-Resume Matching"]
 
-  P0 --> P1 --> P2 --> P3 --> P4 --> P5 --> P6
+  P0 --> P05 --> P1 --> P2 --> P3 --> P4 --> P5 --> P6
 ```
 
 The project follows Biz-Voyager's broad discovery -> evidence review -> screening -> staging -> master philosophy, but applies stricter legal and policy gates before any JD collection.
 
 The initial Korean job-site seed list has been created for review only in `config/job_site_candidates.csv` and `runtime/raw_job_site_discovery.csv`. Inclusion in these files does not mean collection is allowed.
 
-## Phase 0 — Korean Job Site Registry
+JD Collection must only happen after both site/source screening and company-specific source verification.
+
+## Phase 0 — Korean Job-Site Discovery
 
 Goal:
-Build a legally reviewable Korean job-site universe before company discovery or any JD collection.
+Discover possible Korean job posting websites before company discovery or any JD collection.
 
 Flow:
 
 ```text
-raw_job_site_discovery
--> site_policy_evidence
--> job_site_registry_staging
--> site_screening
--> master/job_source_registry
+discovery queries
+-> raw_job_site_discovery
 ```
 
 Purpose:
 
 - discover Korean job posting sources as broadly as possible
 - maximize source recall before filtering for AI relevance
-- review robots.txt and Terms of Service
-- classify source risk
-- approve only operable sources
+- record discovery route, query, source URL, confidence, and notes
+- keep all discovered sites as unapproved candidates
 
 Phase 0 is not company career-page discovery. It is not AI-only filtering. It is not JD collection.
 
@@ -98,7 +99,34 @@ Initial candidate categories:
 Outputs:
 
 - `runtime/raw_job_site_discovery.csv`
+
+## Phase 0.5 — Job-Site Evidence Review and Source Screening
+
+Goal:
+Review discovered job sites before they can become approved source candidates.
+
+Flow:
+
+```text
+raw_job_site_discovery
+-> site_policy_evidence
+-> site_screening_results
+-> job_site_registry_staging
+-> master/job_source_registry
+```
+
+Purpose:
+
+- review robots.txt and Terms of Service
+- identify API, login, CAPTCHA, anti-bot, and reuse risks
+- reject technically accessible but policy-prohibited sites
+- preserve evidence traceability
+- keep discovered sites out of master until screened
+
+Outputs:
+
 - `runtime/site_policy_evidence.csv`
+- `runtime/site_screening_results.csv`
 - `staging/job_site_registry_staging.csv`
 - `master/job_source_registry.csv`
 
@@ -116,12 +144,12 @@ Core checks:
 
 Source grades:
 
-- A — Publicly accessible official source with no approval required
-- B — Public ATS or public endpoint
-- C — Public company career page with acceptable robots.txt and Terms of Service
-- D — Official API or source requiring manual application, approval, contract, institutional access, or API key issuance
-- E — General scraping required or policy unclear
-- F — Login required, CAPTCHA required, anti-bot bypass required, robots blocked, or Terms of Service prohibit collection
+- A — Official API available
+- B — Public ATS/API endpoint available
+- C — Public career/job page with acceptable robots.txt and Terms of Service
+- D — Unclear policy or general scraping needed
+- E — Login, CAPTCHA, anti-bot, or prohibited collection
+- F — Unusable or blocked
 
 Approval status values:
 
@@ -131,7 +159,7 @@ Approval status values:
 - `rejected`
 - `expired`
 
-## Phase 1 — Company Discovery Registry
+## Phase 1 — Company Discovery
 
 Goal:
 Build a broad AI hiring candidate company universe.
@@ -183,20 +211,17 @@ Outputs:
 - `staging/company_registry_staging.csv`
 - `master/company_registry_master.csv`
 
-## Phase 2 — Source Discovery and Verification
+## Phase 2 — Company Source Discovery
 
 Goal:
-Find and verify each approved company's job posting source.
+Map approved or candidate companies to company-specific job sources.
 
 Flow:
 
 ```text
 approved company registry
 -> source discovery
--> source evidence collection
--> source verification
 -> source registry staging
--> approved source registry
 ```
 
 Source types:
@@ -209,16 +234,11 @@ Source types:
 - public ATS endpoints
 - RSS/sitemap job feeds
 
-Verification checks:
+Discovery notes:
 
-- official domain match
-- robots compatibility
-- ToS compatibility
-- ATS identification
-- public access
-- HTML structure quality
-- AI JD availability
-- maintenance risk
+- identify possible official career pages, ATS pages, and public source links
+- preserve discovery evidence
+- keep source candidates unapproved until Phase 3 verification
 
 Source grades:
 
@@ -256,12 +276,22 @@ A source must not move to an approved source registry unless:
 Outputs:
 
 - `runtime/source_discovery.csv`
+- `staging/source_registry_staging.csv`
+
+## Phase 3 — Source Verification
+
+Goal:
+Verify company-specific sources before JD collection.
+
+Phase 3 checks official domain match, source grade, approval status, robots compatibility, Terms compatibility, public access, ATS signals, source quality, and maintenance risk.
+
+Outputs:
+
 - `runtime/source_policy_evidence.csv`
 - `runtime/source_verification.csv`
-- `staging/source_registry_staging.csv`
 - `master/source_registry_master.csv`
 
-## Phase 3 — JD Collection
+## Phase 4 — JD Collection
 
 Goal:
 Collect AI-related public JD candidates only from approved sources.
@@ -329,7 +359,7 @@ Outputs:
 - `data/logs/collection_log.csv`
 - `runtime/errors.csv`
 
-## Phase 4 — JD Quality Filtering and Staging
+## Phase 5 — JD Normalization and Labeling
 
 Goal:
 Filter unusable, non-AI, duplicate, and low-quality JDs.
@@ -367,7 +397,7 @@ Outputs:
 - `staging/jd_staging.csv`
 - `runtime/jd_validation_errors.csv`
 
-## Phase 5 — JD Master Dataset
+## JD Master Dataset
 
 Goal:
 Promote only validated high-quality AI JDs.
@@ -394,7 +424,7 @@ Outputs:
 - `master/jd_master_dataset.csv`
 - `data/labeled/labeled_jds.csv`
 
-## Phase 6 — JD-Resume Matching Research
+## Phase 6 — Future JD-Resume Matching
 
 Goal:
 Prepare structured JD datasets for future resume matching.
@@ -446,6 +476,8 @@ ai-hiring-market-pipeline/
   README.md
 
   docs/
+    phase0_job_site_discovery.md
+    phase0_5_site_screening.md
     job_site_discovery.md
     source_discovery_routes.md
     phase0_job_source_registry.md
@@ -462,6 +494,9 @@ ai-hiring-market-pipeline/
 
   configs/
     company_signal_schema.yml
+    job_site_discovery_queries.yaml
+    job_site_discovery_sources.yaml
+    policy_keywords.yaml
     ai_keywords.yaml
     taxonomy_v1.yaml
     source_rules.yaml
@@ -469,6 +504,7 @@ ai-hiring-market-pipeline/
   runtime/
     raw_job_site_discovery.csv
     site_policy_evidence.csv
+    site_screening_results.csv
     raw_company_discovery.csv
     company_candidates.csv
     company_evidence.csv

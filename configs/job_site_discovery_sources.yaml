@@ -1,0 +1,22 @@
+allowed_discovery_source_types:
+  - manual_research
+  - official_search_api_if_available
+  - public_directory
+  - government_or_public_portal
+  - curated_article_or_report
+  - existing_known_source
+
+prohibited_discovery_methods:
+  - scraping_google_naver_bing_result_pages_when_not_allowed
+  - bot_bypass
+  - captcha_bypass
+  - login_automation
+  - aggressive_crawling
+  - ip_rotation
+  - hidden_api_abuse
+
+operating_notes:
+  - Discovery creates candidate site records only.
+  - Discovery does not approve collection.
+  - Discovery should capture source URL, query, route, and confidence for traceability.
+  - Any automated search API use requires policy review and allowed usage terms.

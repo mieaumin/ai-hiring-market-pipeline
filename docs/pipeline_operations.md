@@ -12,7 +12,7 @@ broad discovery
 -> master
 ```
 
-This project adds a stricter Phase 0 Korean job site compliance registry before any JD collection.
+This project adds Phase 0 Korean Job-Site Discovery and Phase 0.5 Job-Site Evidence Review and Source Screening before company discovery or any JD collection.
 
 ## Operating Rules
 
@@ -57,21 +57,24 @@ Future runs should be recorded in:
 ## Promotion Boundaries
 
 Phase 0:
-`raw_job_site_discovery -> site_policy_evidence -> job_site_registry_staging -> site_screening -> master/job_source_registry`
+`discovery queries -> raw_job_site_discovery`
+
+Phase 0.5:
+`raw_job_site_discovery -> site_policy_evidence -> site_screening_results -> job_site_registry_staging -> master/job_source_registry`
 
 Phase 1:
 `raw_company_discovery -> company_evidence -> company_registry_staging -> company_screening -> master/company_registry_master`
 
 Phase 2:
-`company_registry_master -> source_discovery -> source_policy_evidence -> source_verification -> source_registry_staging -> master/source_registry_master`
+`company_registry_master -> source_discovery -> source_registry_staging`
 
 Phase 3:
-`source_registry_master -> raw_jd_collection -> data/raw/raw_jds.csv`
-
-Phase 3 can run only after `collection_guard.py` approves the row for collection.
+`source_registry_staging -> source_policy_evidence -> source_verification -> master/source_registry_master`
 
 Phase 4:
-`raw_jds -> validation -> normalization -> AI role filtering -> deduplication -> staging/jd_staging.csv`
+`source_registry_master -> raw_jd_collection -> data/raw/raw_jds.csv`
+
+Phase 4 can run only after `collection_guard.py` approves the row for collection.
 
 Phase 5:
-`jd_staging -> quality_gate -> master/jd_master_dataset.csv`
+`raw_jds -> validation -> normalization -> AI role filtering -> labeling -> deduplication -> staging/jd_staging.csv -> master/jd_master_dataset.csv`

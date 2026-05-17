@@ -1,1 +1,1 @@
-evidence_id,site_id,site_name,evidence_category,evidence_url,evidence_text_excerpt,policy_keyword_found,risk_level,reviewer,reviewed_at,decision,notes
+evidence_id,site_id,site_name,site_url,evidence_category,evidence_source_url,evidence_text_excerpt,policy_keyword_found,risk_level,reviewer,reviewed_at,notes

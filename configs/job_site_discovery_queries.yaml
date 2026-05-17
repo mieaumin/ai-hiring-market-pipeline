@@ -1,0 +1,36 @@
+korean_queries:
+  general_job_sites:
+    - 채용공고 사이트
+    - 취업 플랫폼
+    - 채용 플랫폼
+    - 구인구직 사이트
+    - 채용공고 모음
+    - 취업사이트 추천
+  startup_and_tech:
+    - 스타트업 채용 플랫폼
+    - 개발자 채용 플랫폼
+    - AI 채용 사이트
+    - 데이터 직무 채용
+    - 머신러닝 엔지니어 채용
+    - 인공지능 채용공고
+  public_and_entry_level:
+    - 공공 채용 사이트
+    - 인턴 채용 사이트
+    - 신입 채용 사이트
+  recruiting_and_career:
+    - 헤드헌팅 플랫폼
+    - 커리어 플랫폼
+
+english_korea_queries:
+  - Korea job board
+  - Korean hiring platform
+  - Korea AI jobs
+  - Korea developer jobs
+  - Korea startup jobs
+  - Korea public job portal
+
+related_keyword_expansion_notes:
+  - Related keywords are used to expand discovery manually or through allowed official/public search APIs only.
+  - Search result pages must not be scraped when the search provider policy does not allow it.
+  - Expanded keywords should be recorded in runtime/raw_job_site_discovery.csv as discovery_query values.
+  - Query expansion is for discovering possible job-site sources, not collecting job postings.

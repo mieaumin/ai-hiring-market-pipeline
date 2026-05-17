@@ -106,3 +106,15 @@ job_site_discovery:
     - large_scale_crawling
     - developer_only_site_restriction
     - company_career_page_discovery
+
+phase0_5_site_screening_grades:
+  A: official_api_available
+  B: public_ats_or_api_endpoint_available
+  C: public_career_or_job_page_with_acceptable_robots_and_terms
+  D: unclear_policy_or_general_scraping_needed
+  E: login_captcha_antibot_or_prohibited_collection
+  F: unusable_or_blocked
+  approval_rules:
+    - only_A_B_and_carefully_reviewed_C_can_be_approved
+    - D_requires_manual_or_legal_review
+    - E_and_F_must_be_rejected

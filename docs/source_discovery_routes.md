@@ -22,7 +22,7 @@ Candidate job-site rows in `runtime/raw_job_site_discovery.csv`.
 
 Acceptance criteria:
 
-- The row captures the query or keyword in `discovery_keyword`.
+- The row captures the query or keyword in `discovery_query`.
 - The row captures the search route in `discovery_route`.
 - The row does not imply approval or collection eligibility.
 
@@ -34,7 +34,7 @@ Discover job sites that are referenced by public pages, articles, community post
 Process:
 
 - Record the referenced job-site URL.
-- Record the page or note that led to the discovery in `discovery_source`.
+- Record the page or note that led to the discovery in `discovery_source_url`.
 - Classify the broad `site_type` without judging compliance.
 
 Output:

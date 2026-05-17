@@ -3,6 +3,7 @@ from pathlib import Path
 from src.utils.template_schemas import (
     JOB_SITE_REGISTRY_COLUMNS,
     RAW_JOB_SITE_DISCOVERY_COLUMNS,
+    SITE_SCREENING_RESULTS_COLUMNS,
     SITE_POLICY_EVIDENCE_COLUMNS,
     missing_columns,
 )
@@ -29,6 +30,12 @@ def test_job_site_staging_and_master_share_screening_schema():
         "master/job_source_registry.csv",
     ]:
         assert missing_columns(ROOT / relative_path, JOB_SITE_REGISTRY_COLUMNS) == []
+
+
+def test_site_screening_results_schema_supports_phase0_5_review():
+    path = ROOT / "runtime/site_screening_results.csv"
+
+    assert missing_columns(path, SITE_SCREENING_RESULTS_COLUMNS) == []
 
 
 def test_job_site_registry_schema_includes_strict_policy_fields():

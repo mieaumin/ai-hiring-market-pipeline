@@ -48,11 +48,15 @@ broad discovery
 - `site_id`
 - `site_name`
 - `site_url`
+- `site_domain`
 - `site_type`
 - `discovery_route`
-- `discovery_keyword`
-- `discovery_source`
+- `discovery_query`
+- `discovery_source_url`
 - `country`
+- `confidence`
+- `review_status`
+- `collection_eligibility`
 - `notes`
 - `discovered_at`
 
@@ -91,7 +95,7 @@ The initial Korean job-site seed list is stored in:
 - `config/job_site_candidates.csv`
 - `runtime/raw_job_site_discovery.csv`
 
-This seed list is not an approved source list. Inclusion in `config/job_site_candidates.csv` only means the source is part of the broad discovery universe and should be reviewed later.
+This seed list is not an approved source list. Inclusion in `config/job_site_candidates.csv` or `runtime/raw_job_site_discovery.csv` only means the source is part of the broad discovery universe and should be reviewed later.
 
 Seeded sources must remain unapproved until evidence review is complete. Robots.txt, Terms of Service, API requirements, login requirements, CAPTCHA risk, anti-bot risk, public HTML access, and reuse restrictions must be reviewed before any source can move to `master/job_source_registry.csv`.
 

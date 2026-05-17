@@ -79,11 +79,15 @@ These categories are for recall. They do not imply AI relevance, collection elig
 - `site_id`
 - `site_name`
 - `site_url`
+- `site_domain`
 - `site_type`
 - `discovery_route`
-- `discovery_keyword`
-- `discovery_source`
+- `discovery_query`
+- `discovery_source_url`
 - `country`
+- `confidence`
+- `review_status`
+- `collection_eligibility`
 - `notes`
 - `discovered_at`
 
