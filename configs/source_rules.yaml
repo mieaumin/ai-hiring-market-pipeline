@@ -83,3 +83,26 @@ collection_policy:
   - no_hidden_endpoints
   - no_prohibited_scraping
 
+job_site_discovery:
+  priority: build_korean_job_site_universe_before_company_discovery
+  discovery_routes:
+    - search_engine_based_discovery
+    - reverse_reference_discovery
+    - jd_source_reverse_discovery
+  site_type_examples:
+    - job_portal
+    - startup_jobs
+    - developer_jobs
+    - public_jobs
+    - intern_jobs
+    - headhunting_platform
+    - career_platform
+    - community_jobs
+    - company_jobs
+    - unknown
+  current_phase_is_not:
+    - ai_only_site_filtering
+    - jd_collection
+    - large_scale_crawling
+    - developer_only_site_restriction
+    - company_career_page_discovery

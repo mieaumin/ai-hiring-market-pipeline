@@ -1,8 +1,39 @@
 # Phase 0 - Korean Job Site Registry Construction
 
-Phase 0 builds a strict, compliance-first Korean job site registry before any JD collection begins.
+Phase 0 builds the Korean job-site universe before company discovery or JD collection.
 
-This project follows Biz-Voyager's broad discovery -> evidence review -> screening -> staging -> master philosophy, but applies stricter legal and policy gates before any JD collection. Phase 0 is not a crawling phase. It does not collect job postings, scrape pages, call live APIs, automate browsers, or bypass access controls.
+This phase follows the Biz-Voyager-style operating model:
+
+```text
+broad discovery
+-> evidence review
+-> screening
+-> staging
+-> master
+```
+
+It adds strict legal and policy gates before any future collection.
+
+## Current Priority
+
+The current priority is Korean job-site discovery, not company career-page discovery.
+
+Phase 0 is:
+
+```text
+broad source discovery
+-> source evidence collection
+-> source screening
+-> approved source registry
+```
+
+Phase 0 is not:
+
+- company career page discovery
+- AI-only source filtering
+- JD collection
+- large-scale crawling
+- developer-only site discovery
 
 ## Required Flow
 
@@ -16,6 +47,59 @@ raw_job_site_discovery
 
 Raw discovery is intentionally broad. Approval is intentionally strict. A discovered site is not an approved source.
 
+## Discovery Routes
+
+Phase 0 supports three discovery routes:
+
+- Route A - search-engine-based discovery
+- Route B - reverse-reference discovery
+- Route C - JD-source reverse discovery
+
+See `docs/source_discovery_routes.md` for route definitions.
+
+## Candidate Site Categories
+
+Initial Korean job-site candidate categories include:
+
+- general job portals
+- startup hiring platforms
+- public/government job platforms
+- university/internship job boards
+- career communities
+- headhunting/recruiting platforms
+- developer hiring platforms
+- company hiring aggregators
+
+These categories are for recall. They do not imply AI relevance, collection eligibility, or approval.
+
+## Raw Discovery Schema
+
+`runtime/raw_job_site_discovery.csv` records broad candidate sites with:
+
+- `site_id`
+- `site_name`
+- `site_url`
+- `site_type`
+- `discovery_route`
+- `discovery_keyword`
+- `discovery_source`
+- `country`
+- `notes`
+- `discovered_at`
+
+Allowed `site_type` examples:
+
+- `job_portal`
+- `startup_jobs`
+- `developer_jobs`
+- `public_jobs`
+- `intern_jobs`
+- `headhunting_platform`
+- `career_platform`
+- `community_jobs`
+- `company_jobs`
+- `unknown`
+
 ## Source Grades
 
 | Grade | Meaning | Use policy |
@@ -27,55 +111,25 @@ Raw discovery is intentionally broad. Approval is intentionally strict. A discov
 | E | General scraping required or policy unclear | Avoid in MVP |
 | F | Login required, CAPTCHA required, anti-bot bypass required, robots blocked, or Terms of Service prohibit collection | Prohibited |
 
-Only Grade A can be considered directly usable without manual approval. "Carefully reviewed" means human approval is required.
+Only Grade A can be considered directly usable without manual approval. Grades B, C, and D require human approval before use. Grade E is rejected for the MVP unless later re-reviewed. Grade F is prohibited.
 
-Allowed `approval_status` values:
+## Strict Evidence Review
 
-- `not_required`
-- `pending`
-- `approved`
-- `rejected`
-- `expired`
+Evidence review must cover:
 
-Master promotion rule:
+- robots.txt
+- Terms of Service
+- API requirement
+- login requirement
+- CAPTCHA
+- anti-bot controls
+- public HTML access
+- reuse restrictions
+- copyright risk
+- database-right risk
+- personal-data risk
 
-- Grade A can move forward only after automated checks pass.
-- Grades B, C, and D can move forward only when human `approval_status` is `approved`.
-- Grade E is rejected for the MVP unless later re-reviewed.
-- Grade F is prohibited.
-
-## Strict Eligibility Gates
-
-A site can be approved only if:
-
-- target job pages are not blocked by robots.txt
-- Terms of Service do not prohibit crawling, scraping, automated collection, copying, extraction, reuse, or redistribution
-- no login is required
-- no CAPTCHA is required
-- no anti-bot bypass is required
-- no API approval is required
-- public HTML access is available
-- collection can be done conservatively with low request volume
-- collected data can be limited to necessary JD fields and source links
-
-If any gate is unclear, the site should not be approved. Use Grade E unless a later review can resolve the uncertainty.
-
-## Terms of Service Review Checklist
-
-Reviewers should check whether the Terms of Service mention or imply:
-
-- automated collection prohibited
-- scraping/crawling/bot/spider prohibited
-- copying/extraction/storage prohibited
-- redistribution prohibited
-- derivative or secondary use prohibited
-- commercial use prohibited
-- database reproduction prohibited
-- API approval required
-- abnormal access prohibited
-- access-control bypass prohibited
-
-Any prohibitive wording should be captured in `runtime/site_policy_evidence.csv` with the relevant excerpt and risk level.
+Any unclear or restrictive evidence should prevent approval until reviewed.
 
 ## 0-0 Source Discovery Strategy Definition
 
@@ -84,12 +138,14 @@ Define how Korean job sites are discovered, grouped, evidenced, screened, and pr
 
 Input:
 - Project scope
-- Target AI JD discovery needs
+- Korean job-site discovery categories
+- Discovery route definitions
 - Legal and ethics policy
 - Source compliance review policy
 
 Process:
-- Define broad discovery methods such as manual search, public directories, company career links, sitemap references, official documentation, and public policy pages.
+- Define broad discovery routes.
+- Define allowed `site_type` categories.
 - Define required policy evidence before screening.
 - Define strict source grades, approval status values, and promotion gates.
 
@@ -110,14 +166,14 @@ Capture potential Korean job posting sources without deciding whether they are u
 
 Input:
 - Manual search results
-- Company career page references
-- Public job portal names
-- Public ATS references
+- Reverse-reference notes
+- Public job-site mentions
+- Known source references
 - Research notes
 
 Process:
 - Record discovered sources in `runtime/raw_job_site_discovery.csv`.
-- Keep source name, URL, discovery method, discovery evidence, and notes.
+- Keep site name, URL, type, discovery route, keyword, source, country, notes, and timestamp.
 - Do not collect job postings.
 - Do not infer approval from discovery.
 
@@ -126,7 +182,7 @@ Output:
 
 Acceptance Criteria:
 - Each row is a candidate only.
-- Evidence link or notes explain why the source was discovered.
+- Discovery route and source explain why the site was discovered.
 - No fake source rows or JD data are added.
 
 ## 0-2 Site Canonicalization
@@ -213,16 +269,16 @@ Input:
 
 Process:
 - Check robots.txt, Terms of Service, login requirements, CAPTCHA, anti-bot risk, API approval requirements, public HTML access, dynamic rendering risk, personal data risk, database right risk, copyright risk, reuse restriction risk, and request-volume feasibility.
-- Assign `source_grade`, `manual_review_required`, `human_approval_required`, and `approval_status`.
+- Assign a conservative decision.
 - Document decision reason, reviewer, and review timestamp.
 
 Output:
 - Screened site registry decisions
 
 Acceptance Criteria:
-- Grade A is directly usable only after basic automated checks pass.
-- Grades B, C, and D require human approval before use.
-- Grade E and Grade F sources do not move to master for MVP use.
+- Discovery alone never approves a site.
+- Unclear policy leads to manual or legal review, not approval.
+- Prohibited or risky sources do not move to master for MVP use.
 
 ## 0-6 Eligibility Decision
 
@@ -236,9 +292,8 @@ Input:
 - Reviewer notes
 
 Process:
-- Confirm `source_grade`, manual review requirement, human approval requirement, and approval status.
 - Confirm the decision reason is supported by evidence.
-- Confirm Grade A has passed basic automated checks or Grade B/C/D has human `approval_status = approved`.
+- Confirm robots.txt and Terms do not block the intended collection.
 - Keep blocked, ambiguous, or legally unclear sources out of master.
 
 Output:
@@ -252,7 +307,7 @@ Acceptance Criteria:
 ## 0-7 Approved Source Registry
 
 Purpose:
-Promote only Grade A sources with automated checks passed, or Grade B/C/D sources with human `approval_status = approved`, into the master registry.
+Promote only screened and approved job-site sources into the master registry.
 
 Input:
 - Screened staging records
@@ -262,7 +317,6 @@ Input:
 Process:
 - Promote eligible records to `master/job_source_registry.csv`.
 - Preserve collection scope, allowed method, decision reason, reviewer, and last reviewed timestamp.
-- Preserve approval status, approval reviewer, approval reviewed timestamp, and approval notes.
 - Keep staging and master separated.
 
 Output:
@@ -270,7 +324,7 @@ Output:
 
 Acceptance Criteria:
 - Master contains only reviewed sources with traceable evidence.
-- Master does not contain Grade E, Grade F, pending, rejected, or expired approvals.
+- Master does not contain blocked or unclear sources.
 - Collection scope is limited to necessary JD fields and source links.
 
 ## 0-8 Source Monitoring

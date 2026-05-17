@@ -8,6 +8,63 @@ from __future__ import annotations
 from pathlib import Path
 
 
+RAW_JOB_SITE_DISCOVERY_COLUMNS = [
+    "site_id",
+    "site_name",
+    "site_url",
+    "site_type",
+    "discovery_route",
+    "discovery_keyword",
+    "discovery_source",
+    "country",
+    "notes",
+    "discovered_at",
+]
+
+SITE_POLICY_EVIDENCE_COLUMNS = [
+    "evidence_id",
+    "site_id",
+    "site_name",
+    "evidence_category",
+    "evidence_url",
+    "evidence_text_excerpt",
+    "policy_keyword_found",
+    "risk_level",
+    "reviewer",
+    "reviewed_at",
+    "decision",
+    "notes",
+]
+
+JOB_SITE_REGISTRY_COLUMNS = [
+    "site_id",
+    "site_name",
+    "site_url",
+    "site_type",
+    "country",
+    "robots_txt_url",
+    "robots_target_path_status",
+    "terms_url",
+    "terms_collection_policy",
+    "api_required",
+    "login_required",
+    "captcha_required",
+    "anti_bot_risk",
+    "public_html_access",
+    "dynamic_rendering_risk",
+    "personal_data_risk",
+    "database_right_risk",
+    "copyright_risk",
+    "reuse_restriction_risk",
+    "collection_scope",
+    "allowed_method",
+    "decision",
+    "decision_reason",
+    "last_reviewed_at",
+    "reviewer",
+    "notes",
+]
+
 SOURCE_REGISTRY_COLUMNS = [
     "source_id",
     "company_id",
@@ -162,6 +219,10 @@ ERRORS_COLUMNS = [
 ]
 
 TEMPLATE_FILES = {
+    "runtime/raw_job_site_discovery.csv": RAW_JOB_SITE_DISCOVERY_COLUMNS,
+    "runtime/site_policy_evidence.csv": SITE_POLICY_EVIDENCE_COLUMNS,
+    "staging/job_site_registry_staging.csv": JOB_SITE_REGISTRY_COLUMNS,
+    "master/job_source_registry.csv": JOB_SITE_REGISTRY_COLUMNS,
     "configs/source_registry_template.csv": SOURCE_REGISTRY_COLUMNS,
     "runtime/source_discovery.csv": SOURCE_REGISTRY_COLUMNS,
     "runtime/source_verification.csv": SOURCE_REGISTRY_COLUMNS,

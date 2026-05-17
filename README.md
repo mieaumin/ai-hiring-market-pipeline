@@ -4,17 +4,19 @@ Biz-Voyager-style AI hiring market data pipeline with stricter source compliance
 
 The long-term goal is to legally collect, validate, normalize, structure, and prepare AI-related job descriptions (JDs) from approved sources so they can later be matched with AI candidate resumes.
 
+Current priority: build the Korean job-site universe first, before company discovery, company career-page discovery, or JD collection.
+
 This project is not designed for massive crawling. It is designed around:
 
 - recall-first discovery
 - evidence-first promotion
-- company-first architecture
+- Korean job-site universe discovery before company discovery
 - source compliance first
 - staging/master separation
 - explainability
 - conservative collection policy
 
-The repository now includes a first safe approved-source-only collection runner. It does not perform broad crawling, browser automation, LLM API integration, Google Sheets API integration, CAPTCHA bypass, anti-bot evasion, login automation, IP rotation, or access-control bypass. If `master/source_registry_master.csv` has no crawl-eligible approved source, collection is skipped.
+The repository includes a first safe approved-source-only collection runner, but the current priority is still Phase 0 discovery and evidence review. The runner does not perform broad crawling, browser automation, LLM API integration, Google Sheets API integration, CAPTCHA bypass, anti-bot evasion, login automation, IP rotation, or access-control bypass. If no crawl-eligible approved source exists, collection is skipped.
 
 ## Final Pipeline Architecture
 
@@ -52,7 +54,7 @@ The project follows Biz-Voyager's broad discovery -> evidence review -> screenin
 ## Phase 0 — Korean Job Site Registry
 
 Goal:
-Build a legally reviewable Korean job-site universe before any collection.
+Build a legally reviewable Korean job-site universe before company discovery or any JD collection.
 
 Flow:
 
@@ -66,10 +68,30 @@ raw_job_site_discovery
 
 Purpose:
 
-- discover Korean job posting sources broadly
+- discover Korean job posting sources as broadly as possible
+- maximize source recall before filtering for AI relevance
 - review robots.txt and Terms of Service
 - classify source risk
 - approve only operable sources
+
+Phase 0 is not company career-page discovery. It is not AI-only filtering. It is not JD collection.
+
+Discovery routes:
+
+- Route A - search-engine-based discovery
+- Route B - reverse-reference discovery
+- Route C - JD-source reverse discovery
+
+Initial candidate categories:
+
+- general job portals
+- startup hiring platforms
+- public/government job platforms
+- university/internship job boards
+- career communities
+- headhunting/recruiting platforms
+- developer hiring platforms
+- company hiring aggregators
 
 Outputs:
 
@@ -398,8 +420,8 @@ Collect broadly first. Filter later with evidence and quality gates.
 2. Evidence-first promotion
 Nothing moves to master without evidence.
 
-3. Company-first architecture
-Company relevance comes before JD collection.
+3. Job-site universe before company discovery
+The Korean job-site source universe is built before company discovery and JD collection.
 
 4. Source compliance first
 No source enters collection without review.
@@ -422,6 +444,8 @@ ai-hiring-market-pipeline/
   README.md
 
   docs/
+    job_site_discovery.md
+    source_discovery_routes.md
     phase0_job_source_registry.md
     phase1_company_discovery.md
     phase2_source_discovery_verification.md

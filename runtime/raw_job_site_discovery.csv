@@ -1,2 +1,1 @@
-discovery_id,site_name,site_url,discovery_method,discovered_by,discovered_at,evidence_link,preliminary_category,notes
-
+site_id,site_name,site_url,site_type,discovery_route,discovery_keyword,discovery_source,country,notes,discovered_at
