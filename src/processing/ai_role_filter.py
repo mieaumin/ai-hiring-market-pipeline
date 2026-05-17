@@ -34,6 +34,14 @@ def match_ai_keywords(text: str, keywords: list[str] | None = None) -> list[str]
 
 def is_ai_related_jd(record: dict, keywords: list[str] | None = None) -> bool:
     """Return True when title or description matches AI keyword rules."""
-    searchable = f"{record.get('title', '')} {record.get('description_clean', '')} {record.get('description', '')}"
+    searchable = " ".join(
+        [
+            str(record.get("title", "")),
+            str(record.get("job_title", "")),
+            str(record.get("description_clean", "")),
+            str(record.get("description", "")),
+            str(record.get("jd_text_clean", "")),
+            str(record.get("jd_text_raw", "")),
+        ]
+    )
     return bool(match_ai_keywords(searchable, keywords))
-

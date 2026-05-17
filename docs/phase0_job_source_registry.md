@@ -1,53 +1,112 @@
-# Phase 0 - Korean Job Source Registry Construction
+# Phase 0 - Korean Job Site Registry Construction
 
-Phase 0 builds a compliance-first registry of Korean job posting sources before any JD collection begins.
+Phase 0 builds a strict, compliance-first Korean job site registry before any JD collection begins.
 
-This is not a crawling phase. It does not collect job postings, scrape pages, call live APIs, automate browsers, or bypass access controls. Its output is an approved source registry created only after source discovery, evidence collection, and compliance review.
+This project follows Biz-Voyager's broad discovery -> evidence review -> screening -> staging -> master philosophy, but applies stricter legal and policy gates before any JD collection. Phase 0 is not a crawling phase. It does not collect job postings, scrape pages, call live APIs, automate browsers, or bypass access controls.
 
-## Phase 0 Pipeline
+## Required Flow
 
 ```text
-0-0 Source Discovery Strategy Definition
-0-1 Raw Job Site Discovery
-0-2 Site Canonicalization
-0-3 Site Profiling
-0-4 Policy Evidence Collection
-0-5 Compliance Review
-0-6 Eligibility Decision
-0-7 Approved Source Registry
-0-8 Source Monitoring
+raw_job_site_discovery
+-> site_policy_evidence
+-> job_site_registry_staging
+-> site_screening
+-> master/job_source_registry
 ```
+
+Raw discovery is intentionally broad. Approval is intentionally strict. A discovered site is not an approved source.
+
+## Source Grades
+
+| Grade | Meaning | Use policy |
+| --- | --- | --- |
+| A | Publicly accessible official source with no approval required | Usable after basic automated checks |
+| B | Public ATS or public endpoint | Requires human review before use |
+| C | Public company career page with acceptable robots.txt and Terms of Service | Requires human review and explicit approval before use |
+| D | Official API or source requiring manual application, approval, contract, institutional access, or API key issuance | Approval pending / manual approval required |
+| E | General scraping required or policy unclear | Avoid in MVP |
+| F | Login required, CAPTCHA required, anti-bot bypass required, robots blocked, or Terms of Service prohibit collection | Prohibited |
+
+Only Grade A can be considered directly usable without manual approval. "Carefully reviewed" means human approval is required.
+
+Allowed `approval_status` values:
+
+- `not_required`
+- `pending`
+- `approved`
+- `rejected`
+- `expired`
+
+Master promotion rule:
+
+- Grade A can move forward only after automated checks pass.
+- Grades B, C, and D can move forward only when human `approval_status` is `approved`.
+- Grade E is rejected for the MVP unless later re-reviewed.
+- Grade F is prohibited.
+
+## Strict Eligibility Gates
+
+A site can be approved only if:
+
+- target job pages are not blocked by robots.txt
+- Terms of Service do not prohibit crawling, scraping, automated collection, copying, extraction, reuse, or redistribution
+- no login is required
+- no CAPTCHA is required
+- no anti-bot bypass is required
+- no API approval is required
+- public HTML access is available
+- collection can be done conservatively with low request volume
+- collected data can be limited to necessary JD fields and source links
+
+If any gate is unclear, the site should not be approved. Use Grade E unless a later review can resolve the uncertainty.
+
+## Terms of Service Review Checklist
+
+Reviewers should check whether the Terms of Service mention or imply:
+
+- automated collection prohibited
+- scraping/crawling/bot/spider prohibited
+- copying/extraction/storage prohibited
+- redistribution prohibited
+- derivative or secondary use prohibited
+- commercial use prohibited
+- database reproduction prohibited
+- API approval required
+- abnormal access prohibited
+- access-control bypass prohibited
+
+Any prohibitive wording should be captured in `runtime/site_policy_evidence.csv` with the relevant excerpt and risk level.
 
 ## 0-0 Source Discovery Strategy Definition
 
 Purpose:
-Define how Korean job posting sources will be discovered, grouped, reviewed, and moved through the registry workflow.
+Define how Korean job sites are discovered, grouped, evidenced, screened, and promoted.
 
 Input:
 - Project scope
 - Target AI JD discovery needs
-- Existing company-first pipeline goals
 - Legal and ethics policy
+- Source compliance review policy
 
 Process:
-- Define source categories such as public job boards, company career pages, public ATS pages, government/public job portals, and manually discovered sources.
-- Define acceptable discovery methods such as manual search, public directories, company career links, sitemap references, official documentation, and public policy pages.
-- Define minimum evidence required before any source can become approved.
+- Define broad discovery methods such as manual search, public directories, company career links, sitemap references, official documentation, and public policy pages.
+- Define required policy evidence before screening.
+- Define strict source grades, approval status values, and promotion gates.
 
 Output:
-- A documented discovery strategy
-- Review criteria for source eligibility
-- CSV templates for raw discovery, staging, evidence, candidates, and master registry
+- Discovery strategy
+- Evidence requirements
+- Staging and master registry templates
 
 Acceptance Criteria:
 - The strategy explicitly says Phase 0 is not a crawling phase.
-- Discovery methods are explainable and auditable.
-- Compliance review is required before approval.
+- Discovery is broad, but approval is strict.
+- Compliance evidence is required before approval.
 
 ## 0-1 Raw Job Site Discovery
 
 Purpose:
-Capture potential Korean job posting sources without deciding whether they are allowed for collection.
+Capture potential Korean job posting sources without deciding whether they are usable.
 
 Input:
 - Manual search results
@@ -57,189 +116,182 @@ Input:
 - Research notes
 
 Process:
-- Record each discovered source in `runtime/raw_job_site_discovery.csv`.
-- Keep only descriptive metadata and evidence links.
+- Record discovered sources in `runtime/raw_job_site_discovery.csv`.
+- Keep source name, URL, discovery method, discovery evidence, and notes.
 - Do not collect job postings.
-- Do not infer approval from discovery alone.
+- Do not infer approval from discovery.
 
 Output:
-- Header-based raw discovery dataset
-- Source candidates ready for canonicalization
+- Raw source discovery records
 
 Acceptance Criteria:
-- Each row has a source name or URL.
-- Discovery method is recorded.
-- Evidence link or notes explain why the source was found.
-- No fake rows or collected JD data are added.
+- Each row is a candidate only.
+- Evidence link or notes explain why the source was discovered.
+- No fake source rows or JD data are added.
 
 ## 0-2 Site Canonicalization
 
 Purpose:
-Normalize discovered sources so duplicate sites, alternate URLs, and subdomains can be reviewed consistently.
+Normalize discovered sources into stable site-level records.
 
 Input:
 - `runtime/raw_job_site_discovery.csv`
-- Source URLs
-- Public domain information
-
-Process:
-- Identify canonical domains.
-- Normalize URLs to a stable site-level reference.
-- Group duplicate entries that refer to the same source.
-- Assign or prepare stable `site_id` values.
-
-Output:
-- Canonical source records ready for staging
-- Reduced duplicate source candidates
-
-Acceptance Criteria:
-- Each staged source has one canonical domain.
-- Duplicate source entries are identified or merged.
-- The canonical URL is reviewable by a human.
-
-## 0-3 Site Profiling
-
-Purpose:
-Describe each job source in terms of coverage, AI relevance, access pattern, and operational risk.
-
-Input:
-- Canonical source records
-- Public source pages
+- Public site URLs
 - Manual review notes
 
 Process:
-- Record site type, country, job coverage, tech job density, and AI job relevance.
-- Review whether search and keyword search are supported.
-- Record visible access characteristics such as login requirements, public HTML access, and dynamic rendering risk.
-- Save the profile in `staging/job_site_registry_staging.csv`.
+- Identify canonical site URLs and domains.
+- Merge duplicate references.
+- Assign stable `site_id` values.
+- Keep ambiguous sources in review rather than guessing.
 
 Output:
-- Staged job source registry records
+- Canonicalized source candidates for policy evidence review
 
 Acceptance Criteria:
-- Site profile fields are filled from public, reviewable evidence.
-- No source is marked approved during profiling.
-- Unknown or ambiguous fields remain reviewable rather than guessed.
+- Each staged source has a stable `site_id`.
+- Duplicate or ambiguous sites are documented.
+- Canonicalization does not imply approval.
 
-## 0-4 Policy Evidence Collection
+## 0-3 Policy Evidence Collection
 
 Purpose:
-Collect evidence needed to decide whether a source is legally and operationally eligible for future collection.
+Collect traceable evidence needed for strict source screening.
 
 Input:
-- Staged source records
-- robots.txt URLs
+- Canonical source candidates
+- robots.txt URL and target job paths
 - Terms of Service pages
 - Public access observations
 - API documentation or approval requirement notes
 
 Process:
 - Record evidence in `runtime/site_policy_evidence.csv`.
-- Use evidence types such as `robots_txt`, `terms_of_service`, `login_requirement`, `captcha`, `anti_bot`, `public_html_access`, `api_requirement`, and `dynamic_rendering`.
-- Store short excerpts and review notes.
-- Mark policy status as `allowed`, `not_allowed`, `unclear`, or `not_checked`.
+- Capture evidence category, source URL, text excerpt, policy keyword found, risk level, reviewer, reviewed timestamp, decision, and notes.
+- Use evidence categories such as robots.txt, terms, login, CAPTCHA, anti-bot, API requirement, public HTML access, dynamic rendering, copyright, database right, personal data, and reuse restriction.
 
 Output:
-- Evidence records for compliance review
+- Traceable policy evidence table
 
 Acceptance Criteria:
-- Evidence is tied to a `site_id`.
-- Evidence source URLs are recorded when available.
-- The policy status is explicit.
-- Ambiguous evidence is not treated as approval.
+- Evidence is linked to `site_id` and `site_name`.
+- Policy excerpts are recorded when available.
+- Ambiguous evidence does not become approval.
 
-## 0-5 Compliance Review
+## 0-4 Job Site Registry Staging
 
 Purpose:
-Apply compliance-first rules before any source is considered eligible for collection.
+Prepare a review workspace that combines source profile and compliance fields.
 
 Input:
-- `staging/job_site_registry_staging.csv`
-- `runtime/site_policy_evidence.csv`
-- Legal and ethics policy
-- Source selection criteria
+- Raw discovery records
+- Policy evidence rows
+- Canonical site records
 
 Process:
-- Review robots.txt, Terms of Service, login requirements, CAPTCHA risk, anti-bot risk, public HTML access, and API requirements.
-- Exclude sources when access is blocked or prohibited.
-- Use `needs_manual_review` when policy wording or access behavior is ambiguous.
-- Document the review reason.
+- Record each site in `staging/job_site_registry_staging.csv`.
+- Fill strict review columns such as robots target path status, terms collection policy, API requirement, login, CAPTCHA, anti-bot risk, public HTML access, personal data risk, database right risk, copyright risk, reuse restriction risk, collection scope, allowed method, decision, and decision reason.
+- Use conservative defaults for unknown risk.
 
 Output:
-- Reviewed source candidate records in `config/job_site_candidates.csv`
+- Staged site registry with compliance fields
 
 Acceptance Criteria:
-- A source is not eligible unless its planned collection method can be explained and audited.
-- A source is excluded if automated collection would require bypass, prohibited access, login, CAPTCHA solving, or API approval without a public non-API route.
-- Review status is never left implicit.
+- No source in staging is treated as approved.
+- Required risk fields are reviewable.
+- Decision reason is traceable to evidence rows.
+
+## 0-5 Site Screening
+
+Purpose:
+Apply strict eligibility gates to decide whether a source can move to master.
+
+Input:
+- `runtime/site_policy_evidence.csv`
+- `staging/job_site_registry_staging.csv`
+- `docs/source_compliance_review.md`
+
+Process:
+- Check robots.txt, Terms of Service, login requirements, CAPTCHA, anti-bot risk, API approval requirements, public HTML access, dynamic rendering risk, personal data risk, database right risk, copyright risk, reuse restriction risk, and request-volume feasibility.
+- Assign `source_grade`, `manual_review_required`, `human_approval_required`, and `approval_status`.
+- Document decision reason, reviewer, and review timestamp.
+
+Output:
+- Screened site registry decisions
+
+Acceptance Criteria:
+- Grade A is directly usable only after basic automated checks pass.
+- Grades B, C, and D require human approval before use.
+- Grade E and Grade F sources do not move to master for MVP use.
 
 ## 0-6 Eligibility Decision
 
 Purpose:
-Decide whether a source can be used in future JD collection phases.
+Convert site screening results into a final registry decision.
 
 Input:
-- Reviewed candidate records
-- Policy evidence
-- Compliance review notes
+- Site screening decision
+- Policy evidence rows
+- Staging record
+- Reviewer notes
 
 Process:
-- Assign `collection_eligibility` as `eligible`, `needs_manual_review`, or `excluded`.
-- Assign `review_status` as `not_checked`, `checked`, or `needs_manual_review`.
-- Record the review reason and unresolved risks.
+- Confirm `source_grade`, manual review requirement, human approval requirement, and approval status.
+- Confirm the decision reason is supported by evidence.
+- Confirm Grade A has passed basic automated checks or Grade B/C/D has human `approval_status = approved`.
+- Keep blocked, ambiguous, or legally unclear sources out of master.
 
 Output:
-- A compliance-reviewed source candidate table
+- Final source eligibility decision
 
 Acceptance Criteria:
-- `eligible` is used only when public access, robots.txt, Terms of Service, and operational risk checks are acceptable.
-- `needs_manual_review` is used for ambiguity.
-- `excluded` is used for blocked, prohibited, login-only, CAPTCHA-protected, anti-bot, or API-approval-only sources.
+- Decision is explicit and traceable.
+- Approval is not inferred from discovery or staging.
+- Non-approved states do not move to master.
 
 ## 0-7 Approved Source Registry
 
 Purpose:
-Create the master registry of sources approved for future collection.
+Promote only Grade A sources with automated checks passed, or Grade B/C/D sources with human `approval_status = approved`, into the master registry.
 
 Input:
-- `config/job_site_candidates.csv`
+- Screened staging records
 - Policy evidence records
 - Reviewer decision
 
 Process:
-- Promote only eligible sources to `master/job_source_registry.csv`.
-- Record approved collection scope, approval reason, approver, approval timestamp, and monitoring status.
+- Promote eligible records to `master/job_source_registry.csv`.
+- Preserve collection scope, allowed method, decision reason, reviewer, and last reviewed timestamp.
+- Preserve approval status, approval reviewer, approval reviewed timestamp, and approval notes.
 - Keep staging and master separated.
 
 Output:
 - `master/job_source_registry.csv`
 
 Acceptance Criteria:
-- Only compliance-reviewed eligible sources are included.
-- Approval scope is explicit.
-- The master registry contains no unreviewed or fake rows.
+- Master contains only reviewed sources with traceable evidence.
+- Master does not contain Grade E, Grade F, pending, rejected, or expired approvals.
+- Collection scope is limited to necessary JD fields and source links.
 
 ## 0-8 Source Monitoring
 
 Purpose:
-Keep approved sources auditable over time as policies, access behavior, and site structure change.
+Keep approved source decisions current over time.
 
 Input:
 - Master source registry
-- Last checked timestamps
-- New policy evidence
+- Updated policy evidence
 - Manual monitoring notes
 
 Process:
-- Re-check source policy and access assumptions on a recurring schedule.
-- Update monitoring status when a source becomes stale, changed, blocked, or needs manual review.
-- Do not continue using a source if approval evidence becomes invalid.
+- Re-check robots.txt, Terms, access behavior, API requirements, and risk fields on a recurring schedule.
+- Move a source out of approved use if evidence becomes stale or invalid.
+- Update last reviewed timestamp, reviewer, decision, and decision reason.
 
 Output:
-- Updated master registry and policy evidence records
+- Updated source registry and policy evidence
 
 Acceptance Criteria:
-- Each approved source has `last_checked_at`.
-- Monitoring status identifies whether the source is active, stale, changed, paused, or needs review.
-- Sources are removed or paused if compliance requirements are no longer met.
-
+- Each approved source has `last_reviewed_at`.
+- Stale or changed sources move back to manual or legal review.
+- Approval is never permanent without monitoring.

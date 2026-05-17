@@ -1,0 +1,85 @@
+source_grades:
+  A:
+    label: Publicly accessible official source with no approval required
+    use_policy: usable after basic automated checks
+    manual_review_required: false
+    human_approval_required: false
+    default_approval_status: not_required
+    can_move_to_master_when: automated_checks_passed
+
+  B:
+    label: Public ATS or public endpoint
+    use_policy: requires human review before use
+    manual_review_required: true
+    human_approval_required: true
+    default_approval_status: pending
+    can_move_to_master_when: human_approval_status_is_approved
+
+  C:
+    label: Public company career page with acceptable robots.txt and Terms of Service
+    use_policy: requires human review and explicit approval before use
+    manual_review_required: true
+    human_approval_required: true
+    default_approval_status: pending
+    can_move_to_master_when: human_approval_status_is_approved
+
+  D:
+    label: Official API or source requiring manual application, approval, contract, institutional access, or API key issuance
+    use_policy: approval pending / manual approval required
+    manual_review_required: true
+    human_approval_required: true
+    default_approval_status: pending
+    can_move_to_master_when: external_or_api_approval_completed_and_human_approval_status_is_approved
+
+  E:
+    label: General scraping required or policy unclear
+    use_policy: avoid in MVP
+    manual_review_required: true
+    human_approval_required: true
+    default_approval_status: rejected
+    can_move_to_master_when: not_allowed_in_mvp_unless_later_re_reviewed
+
+  F:
+    label: Login required, CAPTCHA required, anti-bot bypass required, robots blocked, or Terms of Service prohibit collection
+    use_policy: prohibited
+    manual_review_required: false
+    human_approval_required: false
+    default_approval_status: rejected
+    can_move_to_master_when: never
+
+approval_status_values:
+  - not_required
+  - pending
+  - approved
+  - rejected
+  - expired
+
+master_promotion_rules:
+  - source_grade_is_A_and_automated_checks_passed
+  - source_grade_is_B_C_or_D_and_human_approval_status_is_approved
+
+blocking_rules:
+  - grade_E_is_rejected_for_mvp_unless_later_re_reviewed
+  - grade_F_is_prohibited
+  - pending_approval_cannot_move_to_master
+  - expired_approval_cannot_move_to_master
+  - rejected_approval_cannot_move_to_master
+
+required_verification_checks:
+  - official_domain_match
+  - robots_compatibility
+  - tos_compatibility
+  - ats_identification
+  - public_access
+  - html_structure_quality
+  - ai_jd_availability
+  - maintenance_risk
+
+collection_policy:
+  - conservative_request_rate
+  - no_captcha_solving
+  - no_anti_bot_bypass
+  - no_login_automation
+  - no_hidden_endpoints
+  - no_prohibited_scraping
+

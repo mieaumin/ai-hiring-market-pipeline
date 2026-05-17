@@ -1,1 +1,2 @@
 jd_id,company_id,company_name,source_id,source_url,job_url,job_title,job_category,job_category_confidence,role_group,required_skills,preferred_skills,responsibilities,qualifications,preferred_qualifications,experience_level,education,employment_type,location,jd_text_raw,jd_text_clean,language,collected_at,last_checked_at,source_grade,source_approval_status,validation_status,failure_reason,quality_score,content_hash,duplicate_key,notes
+

@@ -3,13 +3,12 @@
 from __future__ import annotations
 
 import hashlib
-import re
 
 
 def normalize_key_part(value: str) -> str:
     """Normalize a company or title string for duplicate keys."""
     value = (value or "").lower()
-    return re.sub(r"[^a-z0-9가-힣]+", "", value)
+    return "".join(character for character in value if character.isalnum())
 
 
 def text_hash(text: str) -> str:
@@ -21,8 +20,8 @@ def dedupe_key(record: dict, include_text_hash: bool = False) -> tuple:
     """Build a duplicate key from source_url, company, title, and optional text hash."""
     key = (
         record.get("source_url", ""),
-        normalize_key_part(record.get("company", "")),
-        normalize_key_part(record.get("title", "")),
+        normalize_key_part(record.get("company_name") or record.get("company", "")),
+        normalize_key_part(record.get("job_title") or record.get("title", "")),
     )
     if include_text_hash:
         description = record.get("description_clean") or record.get("description", "")
@@ -41,4 +40,3 @@ def deduplicate(records: list[dict], include_text_hash: bool = False) -> list[di
         seen.add(key)
         unique_records.append(record)
     return unique_records
-

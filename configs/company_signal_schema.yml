@@ -7,7 +7,7 @@ signals:
     description: Evidence that the company builds, sells, or applies AI-related products or services.
     score_range: 0-5
 
-  technical_signal:
+  tech_signal:
     description: Evidence of technical capability such as tech blog, GitHub, engineering org, ML platform, or data infrastructure.
     score_range: 0-5
 
@@ -34,6 +34,13 @@ recommended_screening_thresholds:
 
   excluded:
     condition: No reliable AI hiring or AI business evidence.
+
+company_statuses:
+  - seeded
+  - candidate
+  - needs_review
+  - approved_for_source_discovery
+  - rejected
 
 screening_statuses:
   - not_reviewed
@@ -63,14 +70,13 @@ evidence_types:
 signal_categories:
   - hiring_signal
   - business_ai_signal
-  - technical_signal
+  - tech_signal
   - market_signal
   - research_signal
-  - weak_signal
+  - evidence_quality
 
 signal_strengths:
   - strong
   - medium
   - weak
   - unclear
-

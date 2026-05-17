@@ -1,0 +1,49 @@
+required_fields:
+  - jd_id
+  - company_id
+  - company_name
+  - source_id
+  - source_url
+  - job_url
+  - job_title
+  - jd_text_clean
+  - collected_at
+  - source_grade
+  - source_approval_status
+  - content_hash
+  - duplicate_key
+
+minimum_text_length: 200
+
+duplicate_checks:
+  - source_url
+  - job_url
+  - content_hash
+  - duplicate_key
+
+approved_source_requirement:
+  grade_a:
+    source_grade: A
+    allowed_approval_status:
+      - not_required
+  grade_b_c_d:
+    source_grade:
+      - B
+      - C
+      - D
+    allowed_approval_status:
+      - approved
+  blocked_grades:
+    - E
+    - F
+
+ai_relevance_requirement:
+  require_ai_keyword_or_taxonomy_match: true
+  accepted_role_groups:
+    - AI Engineer
+    - AI Researcher
+    - AI Scientist
+    - AI Analyst
+
+quality_score_threshold: 70
+

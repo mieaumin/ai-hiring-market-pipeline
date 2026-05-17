@@ -2,6 +2,8 @@
 
 Phase 1 builds an evidence-backed AI hiring company registry. It is a recall-first discovery and screening workflow, not a JD collection workflow.
 
+This project follows Biz-Voyager's broad discovery -> evidence review -> screening -> staging -> master philosophy, but applies stricter evidence gates before a company can be treated as relevant to the AI hiring market.
+
 This phase does not collect JDs. It does not crawl company websites, run scrapers, call APIs, automate browsers, use LLM APIs, or perform live collection. It creates a reviewable company candidate registry that can later support source discovery and JD collection.
 
 Companies should only move to master after evidence review. A raw company name is not an approved company record.
@@ -20,6 +22,16 @@ Companies should only move to master after evidence review. A raw company name i
 1-8 Company Monitoring
 ```
 
+Required artifact flow:
+
+```text
+raw_company_discovery
+-> company_evidence_review
+-> company_registry_staging
+-> company_screening
+-> master/company_registry_master
+```
+
 ## 1-0 Company Discovery Strategy Definition
 
 Purpose:
@@ -36,6 +48,7 @@ Process:
 - Define what counts as reliable evidence.
 - Define raw, staging, and master registry boundaries.
 - Define screening statuses and review responsibilities.
+- Define company evidence categories: `hiring_signal`, `business_ai_signal`, `tech_signal`, `market_signal`, `research_signal`, and `evidence_quality`.
 
 Output:
 - A documented company discovery strategy
@@ -63,6 +76,7 @@ Process:
 - Preserve raw names and raw URLs without forcing early normalization.
 - Record discovery method, discovery source, reviewer, and preliminary reason.
 - Avoid invented companies and fake rows.
+- Do not approve a company because its name sounds AI-related.
 
 Output:
 - Header-based raw company discovery table
@@ -89,6 +103,7 @@ Process:
 - Identify duplicate candidates.
 - Assign stable `company_id` values.
 - Record country, company URL, and initial company type when known.
+- Track company status as `seeded`, `candidate`, `needs_review`, `approved_for_source_discovery`, or `rejected`.
 - Keep ambiguous name/domain matches in review status rather than guessing.
 
 Output:
@@ -137,7 +152,7 @@ Input:
 Process:
 - Record evidence rows in `runtime/company_evidence.csv`.
 - Use evidence types such as `ai_job_posting`, `ai_product_or_service`, `ai_research_lab`, `tech_blog`, `github_org`, `investment_signal`, `government_ai_program`, `ai_partnership`, `press_release`, `career_page`, and `other`.
-- Assign signal categories such as `hiring_signal`, `business_ai_signal`, `technical_signal`, `market_signal`, `research_signal`, and `weak_signal`.
+- Assign signal categories such as `hiring_signal`, `business_ai_signal`, `tech_signal`, `market_signal`, `research_signal`, and `evidence_quality`.
 - Record evidence excerpt, evidence source URL, checked timestamp, reviewer, confidence, and notes.
 
 Output:
@@ -149,6 +164,7 @@ Acceptance Criteria:
 - Master promotion requires at least two reliable evidence rows.
 - Evidence source URLs are traceable when available.
 - Weak signals alone do not approve a company.
+- A company must not move to master unless its evidence is traceable in `runtime/company_evidence.csv`.
 
 ## 1-5 Company Signal Scoring
 
@@ -164,7 +180,7 @@ Process:
 - Score each company from 0 to 5 for each category:
   - `hiring_signal_score`
   - `business_ai_signal_score`
-  - `technical_signal_score`
+  - `tech_signal_score`
   - `market_signal_score`
   - `research_signal_score`
   - `evidence_quality_score`
@@ -191,9 +207,11 @@ Input:
 
 Process:
 - Assign `screening_status` as `not_reviewed`, `candidate`, `approved`, `needs_manual_review`, or `excluded`.
+- Update `company_status` as `seeded`, `candidate`, `needs_review`, `approved_for_source_discovery`, or `rejected`.
 - Assign `review_status` as `not_checked`, `checked`, or `needs_manual_review`.
 - Record review reason and notes.
 - Require evidence-backed reasoning for approval or exclusion.
+- Apply company screening after staging and before master promotion.
 
 Output:
 - Reviewed staging records
@@ -226,6 +244,7 @@ Acceptance Criteria:
 - Master contains only reviewed and approved companies.
 - Each master company has traceable evidence.
 - Approval reason explains why the company belongs in the AI hiring market universe.
+- No company is approved only because of its name, branding, or vague AI wording.
 
 ## 1-8 Company Monitoring
 
@@ -249,4 +268,3 @@ Acceptance Criteria:
 - Each approved company has `last_checked_at`.
 - Monitoring status is explicit.
 - Stale or uncertain companies are not silently treated as approved.
-

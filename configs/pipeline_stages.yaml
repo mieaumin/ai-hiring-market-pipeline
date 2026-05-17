@@ -1,0 +1,104 @@
+phases:
+  phase0_korean_job_site_registry:
+    name: Korean Job Site Registry
+    input_files:
+      - runtime/raw_job_site_discovery.csv
+      - runtime/site_policy_evidence.csv
+    output_files:
+      - staging/job_site_registry_staging.csv
+      - master/job_source_registry.csv
+    promotion_rule: Source must pass strict site screening and source compliance review.
+    blocking_conditions:
+      - robots_blocked
+      - terms_prohibit_collection
+      - login_required
+      - captcha_required
+      - anti_bot_bypass_required
+
+  phase1_company_discovery_registry:
+    name: Company Discovery Registry
+    input_files:
+      - runtime/raw_company_discovery.csv
+      - runtime/company_evidence.csv
+    output_files:
+      - staging/company_registry_staging.csv
+      - master/company_registry_master.csv
+    promotion_rule: Company must have traceable evidence and approved company screening.
+    blocking_conditions:
+      - no_traceable_evidence
+      - weak_signal_only
+      - ambiguous_company_identity
+
+  phase2_source_discovery_and_verification:
+    name: Source Discovery and Verification
+    input_files:
+      - master/company_registry_master.csv
+      - runtime/source_discovery.csv
+      - runtime/source_policy_evidence.csv
+      - runtime/source_verification.csv
+    output_files:
+      - staging/source_registry_staging.csv
+      - master/source_registry_master.csv
+    promotion_rule: Grade A must pass automated checks, or Grade B/C/D must have human approval_status approved.
+    blocking_conditions:
+      - grade_e
+      - grade_f
+      - approval_pending
+      - approval_rejected
+      - approval_expired
+
+  phase3_jd_collection:
+    name: JD Collection from Approved Sources
+    input_files:
+      - master/source_registry_master.csv
+    output_files:
+      - runtime/raw_jd_collection.csv
+      - data/raw/raw_jds.csv
+      - runtime/jd_collection_log.csv
+    promotion_rule: Collection is allowed only from approved source registry entries.
+    blocking_conditions:
+      - source_not_in_master
+      - source_approval_invalid
+      - prohibited_collection_method
+
+  phase4_jd_quality_filtering_and_staging:
+    name: JD Quality Filtering and Staging
+    input_files:
+      - data/raw/raw_jds.csv
+    output_files:
+      - data/cleaned/cleaned_jds.csv
+      - staging/jd_staging.csv
+      - runtime/jd_validation_errors.csv
+    promotion_rule: JD must satisfy schema, approved-source, AI relevance, deduplication, and quality rules.
+    blocking_conditions:
+      - missing_required_field
+      - source_approval_invalid
+      - description_too_short
+      - not_ai_related
+      - duplicate_jd
+
+  phase5_jd_master_dataset:
+    name: JD Master Dataset
+    input_files:
+      - staging/jd_staging.csv
+      - runtime/quality_gate_report.csv
+    output_files:
+      - master/jd_master_dataset.csv
+      - data/labeled/labeled_jds.csv
+    promotion_rule: JD must pass quality gate and master promotion checks.
+    blocking_conditions:
+      - quality_score_below_threshold
+      - validation_status_not_valid
+      - duplicate_jd
+
+  phase6_jd_resume_matching_research:
+    name: JD-Resume Matching Research
+    input_files:
+      - master/jd_master_dataset.csv
+      - configs/taxonomy_v1.yaml
+    output_files: []
+    promotion_rule: Research phase only; no automated promotion defined yet.
+    blocking_conditions:
+      - taxonomy_not_aligned
+      - missing_traceability
+
