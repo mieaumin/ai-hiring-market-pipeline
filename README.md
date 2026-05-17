@@ -51,6 +51,8 @@ flowchart TD
 
 The project follows Biz-Voyager's broad discovery -> evidence review -> screening -> staging -> master philosophy, but applies stricter legal and policy gates before any JD collection.
 
+The initial Korean job-site seed list has been created for review only in `config/job_site_candidates.csv` and `runtime/raw_job_site_discovery.csv`. Inclusion in these files does not mean collection is allowed.
+
 ## Phase 0 — Korean Job Site Registry
 
 Goal:

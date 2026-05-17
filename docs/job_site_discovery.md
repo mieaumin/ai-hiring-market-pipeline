@@ -84,6 +84,19 @@ The discovery universe should include:
 
 These categories are intentionally broad. They do not imply approval, AI relevance, or collection eligibility.
 
+## Initial Seed List Status
+
+The initial Korean job-site seed list is stored in:
+
+- `config/job_site_candidates.csv`
+- `runtime/raw_job_site_discovery.csv`
+
+This seed list is not an approved source list. Inclusion in `config/job_site_candidates.csv` only means the source is part of the broad discovery universe and should be reviewed later.
+
+Seeded sources must remain unapproved until evidence review is complete. Robots.txt, Terms of Service, API requirements, login requirements, CAPTCHA risk, anti-bot risk, public HTML access, and reuse restrictions must be reviewed before any source can move to `master/job_source_registry.csv`.
+
+Every seeded site starts as `needs_manual_review` or equivalent unreviewed status. No seeded source should be used for JD collection until it passes source screening.
+
 ## Evidence Review
 
 Before a site can be screened, reviewers should collect source evidence in `runtime/site_policy_evidence.csv`.
