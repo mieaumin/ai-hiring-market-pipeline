@@ -1,0 +1,79 @@
+source_category:
+  - official_api
+  - official_ats
+  - official_career_page
+  - approved_job_site
+  - aggregator
+  - community_repost
+  - unknown
+
+source_grade:
+  A:
+    meaning: Official API available.
+    collection_allowed: true if policy/evidence valid.
+  B:
+    meaning: Public ATS/API endpoint available.
+    collection_allowed: true if policy/evidence valid.
+  C:
+    meaning: Public company career page or public job page with acceptable robots and terms.
+    collection_allowed: true only after careful review.
+  D:
+    meaning: Unclear policy or general scraping needed.
+    collection_allowed: false until manual/legal review.
+  E:
+    meaning: Login, CAPTCHA, anti-bot bypass, or prohibited automated collection required.
+    collection_allowed: false.
+  F:
+    meaning: Unusable, blocked, or rejected.
+    collection_allowed: false.
+
+company_category:
+  - ai_native_company
+  - ai_solution_company
+  - data_cloud_mlops_company
+  - healthcare_ai_company
+  - finance_ai_company
+  - manufacturing_robotics_ai_company
+  - commerce_marketing_ai_company
+  - large_enterprise_ai_org
+  - ai_transformation_company
+  - unknown
+
+company_signal_status:
+  - seeded
+  - discovered
+  - evidence_collected
+  - scored
+  - needs_review
+  - approved_for_source_discovery
+  - rejected
+
+jd_role_group:
+  - AI Analyst
+  - AI Engineer
+  - AI Researcher
+  - AI Scientist
+  - Other/Unknown
+
+jd_lineage_type:
+  - canonical_jd
+  - mirrored_jd
+  - aggregator_jd
+  - reposted_jd
+  - unknown
+
+jd_lifecycle_status:
+  - new
+  - changed
+  - unchanged
+  - missing
+  - closed
+  - reopened
+  - inactive
+  - hold
+
+review_confidence:
+  - high
+  - medium
+  - low
+  - unknown

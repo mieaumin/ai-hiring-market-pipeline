@@ -7,6 +7,8 @@ from src.registry.collection_guard import (
 
 def _source_row(**overrides):
     row = {
+        "source_id": "src-001",
+        "source_url": "https://example.com/careers",
         "decision": "approved",
         "source_grade": "A",
         "approval_status": "not_required",

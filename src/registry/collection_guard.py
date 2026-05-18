@@ -12,6 +12,7 @@ ALLOWED_APPROVAL_STATUS = {"not_required", "approved"}
 ALLOWED_ROBOTS_STATUS = {"allowed", "partially_allowed"}
 ALLOWED_TERMS_STATUS = {"allowed", "limited"}
 ALLOWED_ANTI_BOT_RISK = {"none", "low"}
+REQUIRED_COLLECTION_FIELDS = {"source_id", "source_url", "source_grade"}
 
 
 def _normalized(row: dict, field: str) -> str:
@@ -31,17 +32,23 @@ def explain_blocking_reason(row: dict) -> list[str]:
     reasons: list[str] = []
     decision = _normalized(row, "decision")
     grade = str(row.get("source_grade", "")).strip().upper()
-    approval_status = _normalized(row, "approval_status")
+    approval_status = _normalized(row, "source_approval_status") or _normalized(row, "approval_status")
     robots_status = _normalized(row, "robots_target_path_status")
+    if not robots_status and _normalized(row, "robots_allowed") == "true":
+        robots_status = "allowed"
     terms_status = _normalized(row, "terms_collection_policy")
     anti_bot_risk = _normalized(row, "anti_bot_risk")
 
+    missing = [field for field in REQUIRED_COLLECTION_FIELDS if not row.get(field)]
+    reasons.extend(f"missing required field: {field}" for field in sorted(missing))
     if decision != "approved":
         reasons.append("not approved")
-    if approval_status in {"pending", "expired"}:
+    if approval_status in {"", "not_checked", "pending", "expired", "unknown"}:
         reasons.append("approval pending")
     if approval_status == "rejected":
         reasons.append("rejected source")
+    if approval_status == "suspended":
+        reasons.append("source suspended")
     if grade not in ALLOWED_SOURCE_GRADES:
         reasons.append("source grade not allowed")
     if robots_status not in ALLOWED_ROBOTS_STATUS:
@@ -54,7 +61,13 @@ def explain_blocking_reason(row: dict) -> list[str]:
         reasons.append("captcha required")
     if anti_bot_risk not in ALLOWED_ANTI_BOT_RISK:
         reasons.append("anti-bot high")
-    if not _is_true(row, "public_html_access"):
+    allowed_method = _normalized(row, "allowed_method")
+    if (
+        not _is_true(row, "public_html_access")
+        and "json" not in allowed_method
+        and "rss" not in allowed_method
+        and "sitemap" not in allowed_method
+    ):
         reasons.append("public HTML unavailable")
     if grade == "D":
         reasons.append("manual or legal review required")

@@ -1,0 +1,58 @@
+raw_job_site_discovery_to_site_screening_results:
+  required:
+    - site_id
+    - site_url
+    - site_domain
+    - discovery_route
+  conditions:
+    - review_status != approved
+
+site_screening_results_to_master_job_source_registry:
+  allowed_only_if:
+    source_grade:
+      - A
+      - B
+      - C
+    approval_status:
+      - approved
+      - not_required
+    collection_eligibility:
+      - eligible
+      - limited
+    screening_decision:
+      - approved
+      - limited
+    no_approval_blockers_exist: true
+    evidence_is_traceable: true
+  blockers:
+    - robots_disallow
+    - terms_prohibit_automated_collection
+    - login_required
+    - captcha_required
+    - high_anti_bot_risk
+    - critical_reuse_restriction
+    - missing_traceable_evidence
+
+company_candidates_to_company_registry_master:
+  threshold: 15
+  allowed_only_if:
+    validation_status: approved_for_source_discovery
+    evidence_quality_score_required: true
+    korean_or_korea_relevant_required: true
+
+jd_staging_to_jd_master:
+  minimum_text_length: 200
+  target_role_groups:
+    - AI Analyst
+    - AI Engineer
+    - AI Researcher
+    - AI Scientist
+  allowed_only_if:
+    title_exists: true
+    company_exists: true
+    source_url_exists: true
+    job_url_exists: true
+    duplicate_cluster_resolved: true
+    canonical_or_accepted_source_lineage_exists: true
+    source_is_approved: true
+    validation_status_ready: true

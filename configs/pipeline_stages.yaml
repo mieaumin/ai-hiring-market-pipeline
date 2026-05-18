@@ -66,7 +66,7 @@ phases:
       - runtime/source_policy_evidence.csv
       - runtime/source_verification.csv
     output_files:
-      - master/source_registry_master.csv
+      - runtime/source_registry.csv
     promotion_rule: Grade A must pass automated checks, or Grade B/C must have human approval_status approved; Grade D remains in manual/legal review.
     blocking_conditions:
       - grade_e
@@ -78,7 +78,7 @@ phases:
   phase4_jd_collection:
     name: JD Collection from Approved Sources Only
     input_files:
-      - master/source_registry_master.csv
+      - runtime/source_registry.csv
     output_files:
       - runtime/raw_jd_collection.csv
       - data/raw/raw_jds.csv

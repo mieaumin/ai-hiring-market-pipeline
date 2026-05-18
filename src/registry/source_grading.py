@@ -8,7 +8,15 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 
-APPROVAL_STATUS_VALUES = {"not_required", "pending", "approved", "rejected", "expired"}
+APPROVAL_STATUS_VALUES = {
+    "not_checked",
+    "not_required",
+    "pending",
+    "approved",
+    "rejected",
+    "expired",
+    "suspended",
+}
 SOURCE_GRADES = {"A", "B", "C", "D", "E", "F"}
 
 

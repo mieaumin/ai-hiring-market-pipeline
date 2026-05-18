@@ -3,10 +3,11 @@
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
 
 from src.collectors.base_collector import BaseCollector, SourceNotCollectableError
+from src.processing.jd_extractor import build_jd_record
 from src.registry.collection_guard import validate_source_before_collection
+from src.utils.text_cleaning import clean_text
 
 
 class LeverCollector(BaseCollector):
@@ -28,25 +29,16 @@ class LeverCollector(BaseCollector):
         return json.loads(payload)
 
     def normalize(self, records, source_row: dict | None = None) -> list[dict]:
-        normalized = []
-        collected_at = datetime.now(timezone.utc).isoformat()
         source_row = source_row or {}
+        normalized = []
         for record in records:
             normalized.append(
-                {
-                    "company_id": source_row.get("company_id", ""),
-                    "company_name": source_row.get("company_name", ""),
-                    "source_id": source_row.get("source_id", ""),
-                    "source_url": record.get("hostedUrl", ""),
-                    "source_type": "lever",
-                    "company": "",
-                    "title": record.get("text", ""),
-                    "location": (record.get("categories") or {}).get("location", ""),
-                    "description": record.get("descriptionPlain", ""),
-                    "raw_payload": json.dumps(record, ensure_ascii=False),
-                    "collected_at": collected_at,
-                    "source_grade": source_row.get("source_grade", ""),
-                    "source_approval_status": source_row.get("approval_status", ""),
-                }
+                build_jd_record(
+                    source_row=source_row,
+                    job_url=record.get("hostedUrl", "") or source_row.get("source_url", ""),
+                    job_title=clean_text(record.get("text", "")),
+                    jd_text_raw=record.get("descriptionPlain") or json.dumps(record, ensure_ascii=False),
+                    jd_text_clean=clean_text(record.get("descriptionPlain", "")),
+                )
             )
         return normalized

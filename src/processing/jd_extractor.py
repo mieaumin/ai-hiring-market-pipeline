@@ -60,7 +60,8 @@ def build_jd_record(
             "collected_at": collected_at,
             "last_checked_at": collected_at,
             "source_grade": source_row.get("source_grade", ""),
-            "source_approval_status": source_row.get("approval_status", ""),
+            "source_approval_status": source_row.get("source_approval_status")
+            or source_row.get("approval_status", ""),
             "validation_status": validation_status,
             "failure_reason": failure_reason,
             "content_hash": content_hash,

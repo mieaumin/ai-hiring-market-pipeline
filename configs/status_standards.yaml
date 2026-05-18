@@ -1,0 +1,144 @@
+site_review_status:
+  values:
+    - not_checked
+    - evidence_needed
+    - evidence_collected
+    - needs_manual_review
+    - needs_legal_review
+    - screened
+    - rejected
+  transitions:
+    not_checked:
+      - evidence_needed
+      - evidence_collected
+      - needs_manual_review
+      - rejected
+    evidence_needed:
+      - evidence_collected
+      - needs_manual_review
+      - needs_legal_review
+      - rejected
+    evidence_collected:
+      - needs_manual_review
+      - needs_legal_review
+      - screened
+      - rejected
+    needs_manual_review:
+      - screened
+      - needs_legal_review
+      - rejected
+    needs_legal_review:
+      - screened
+      - rejected
+    screened:
+      - evidence_needed
+      - rejected
+    rejected: []
+
+collection_eligibility:
+  values:
+    - eligible
+    - limited
+    - needs_review
+    - excluded
+
+source_approval_status:
+  values:
+    - not_checked
+    - pending
+    - approved
+    - rejected
+    - expired
+    - suspended
+  transitions:
+    not_checked:
+      - pending
+      - rejected
+    pending:
+      - approved
+      - rejected
+      - expired
+      - suspended
+    approved:
+      - expired
+      - suspended
+      - rejected
+    rejected:
+      - pending
+    expired:
+      - pending
+      - rejected
+    suspended:
+      - pending
+      - rejected
+
+source_health_status:
+  values:
+    - healthy
+    - degraded
+    - failing
+    - suspended
+    - unknown
+
+screening_decision:
+  values:
+    - approved
+    - limited
+    - needs_manual_review
+    - needs_legal_review
+    - rejected
+
+jd_validation_status:
+  values:
+    - raw
+    - cleaned
+    - normalized
+    - labeled
+    - duplicate
+    - invalid
+    - promoted_to_master
+    - rejected
+  transitions:
+    raw:
+      - cleaned
+      - invalid
+      - duplicate
+      - rejected
+    cleaned:
+      - normalized
+      - invalid
+      - duplicate
+      - rejected
+    normalized:
+      - labeled
+      - invalid
+      - duplicate
+      - rejected
+    labeled:
+      - promoted_to_master
+      - invalid
+      - duplicate
+      - rejected
+    duplicate:
+      - rejected
+    invalid:
+      - rejected
+    promoted_to_master: []
+    rejected: []
+
+run_status:
+  values:
+    - started
+    - completed
+    - completed_with_warnings
+    - failed
+    - skipped
+
+transition_rules:
+  - discovered site cannot go directly to approved source.
+  - source cannot be approved without evidence.
+  - JD collection cannot run from rejected, pending, or unknown sources.
+  - JD cannot go to master without validation and deduplication.
+  - E/F grade sources must be rejected.
+  - D grade sources must require manual or legal review.
+  - only A/B/carefully reviewed C can be approved.

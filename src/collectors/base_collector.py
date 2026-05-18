@@ -12,6 +12,7 @@ from typing import Iterable
 import requests
 
 from src.registry.collection_guard import validate_source_before_collection
+from src.utils.template_schemas import JD_COLUMNS
 
 
 DEFAULT_USER_AGENT = (
@@ -44,7 +45,7 @@ class BaseCollector(ABC):
     """Base class for source-specific collectors.
 
     Collectors must only be used for entries already approved in
-    master/source_registry_master.csv. This class does not implement bypass,
+    runtime/source_registry.csv. This class does not implement bypass,
     aggressive retries, login automation, CAPTCHA solving, or IP rotation.
     """
 
@@ -92,17 +93,27 @@ class BaseCollector(ABC):
         records = self.parse(payload, source_row)
         return self.normalize(records, source_row)
 
-    def save_raw(self, records: Iterable[dict], output_path: str | Path) -> None:
-        """Save raw records to CSV."""
+    def run(self, source_row: dict, output_path: str | Path | None = None) -> list[dict]:
+        """Run fetch, parse, normalize, and optionally save raw JD rows."""
+        rows = self.collect_source(source_row)
+        if output_path is not None:
+            self.save_raw(rows, output_path)
+        return rows
+
+    def save_raw(self, records: Iterable[dict], output_path: str | Path, append: bool = True) -> None:
+        """Save raw JD records to CSV."""
         records = list(records)
         if not records:
             return
         output_path = Path(output_path)
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        fieldnames = sorted({key for record in records for key in record})
-        with output_path.open("w", encoding="utf-8", newline="") as handle:
-            writer = csv.DictWriter(handle, fieldnames=fieldnames)
-            writer.writeheader()
+        fieldnames = JD_COLUMNS
+        file_exists = output_path.exists() and output_path.stat().st_size > 0
+        mode = "a" if append and file_exists else "w"
+        with output_path.open(mode, encoding="utf-8", newline="") as handle:
+            writer = csv.DictWriter(handle, fieldnames=fieldnames, extrasaction="ignore")
+            if mode == "w":
+                writer.writeheader()
             writer.writerows(records)
 
 

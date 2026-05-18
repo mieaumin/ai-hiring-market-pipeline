@@ -227,6 +227,10 @@ ai-hiring-market-pipeline/
   docs/
     korean_market_scope.md
     pipeline_architecture.md
+    classification_standards.md
+    status_standards.md
+    promotion_rules.md
+    approved_source_collection.md
     biz_voyager_comparison.md
     ats_intelligence_layer.md
     source_relationship_graph.md
@@ -349,7 +353,7 @@ python scripts/run_quality_gate_dryrun.py
 Run approved-source-only collection:
 
 ```bash
-python scripts/run_approved_collection.py
+python scripts/run_approved_source_collection.py
 ```
 
-If no approved crawl-eligible source exists in `master/source_registry_master.csv`, the command must skip collection safely.
+The runner reads `runtime/source_registry.csv`. If no approved crawl-eligible source exists, the command must skip collection safely and must not fabricate output.

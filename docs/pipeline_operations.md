@@ -26,21 +26,21 @@ This project adds Phase 0 Korean Job-Site Discovery and Phase 0.5 Job-Site Evide
 
 ## Safe Commands
 
-Most scripts initialize and validate templates only. `scripts/run_approved_collection.py` is the only collection entry point, and it refuses to run unless a source row has already been approved in `master/source_registry_master.csv` and passes the collection guard. No script solves CAPTCHA, bypasses anti-bot systems, automates login, rotates IPs, calls Google Sheets, or weakens source approval.
+Most scripts initialize and validate templates only. `scripts/run_approved_source_collection.py` is the approved-source-only collection entry point, and it refuses to run unless a source row has already been approved in `runtime/source_registry.csv` and passes the collection guard. No script solves CAPTCHA, bypasses anti-bot systems, automates login, rotates IPs, calls Google Sheets, or weakens source approval.
 
 Recommended safe workflow:
 
 ```bash
 python scripts/init_all_registries.py
 python scripts/validate_pipeline_templates.py
-python scripts/run_approved_collection.py
+python scripts/run_approved_source_collection.py
 python scripts/run_quality_gate_dryrun.py
 ```
 
 When no approved source exists, the collection command prints:
 
 ```text
-No approved crawl-eligible sources found. Collection skipped.
+No approved sources found. Collection skipped safely.
 ```
 
 and performs no network collection.
@@ -69,10 +69,10 @@ Phase 2:
 `company_registry_master -> source_discovery -> source_registry_staging`
 
 Phase 3:
-`source_registry_staging -> source_policy_evidence -> source_verification -> master/source_registry_master`
+`source_registry_staging -> source_policy_evidence -> source_verification -> runtime/source_registry`
 
 Phase 4:
-`source_registry_master -> raw_jd_collection -> data/raw/raw_jds.csv`
+`runtime/source_registry -> raw_jd_collection -> data/raw/raw_jds.csv`
 
 Phase 4 can run only after `collection_guard.py` approves the row for collection.
 

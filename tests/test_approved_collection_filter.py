@@ -1,4 +1,7 @@
-from scripts.run_approved_collection import NO_ELIGIBLE_MESSAGE, filter_collectable_sources
+from scripts.run_approved_source_collection import (
+    NO_APPROVED_SOURCES_MESSAGE,
+    filter_approved_sources,
+)
 
 
 def _source_row(**overrides):
@@ -20,10 +23,10 @@ def _source_row(**overrides):
 
 
 def test_filter_collectable_sources_keeps_only_eligible_rows():
-    eligible, blocked = filter_collectable_sources(
+    eligible, blocked = filter_approved_sources(
         [
             _source_row(source_id="src-ok"),
-            _source_row(source_id="src-pending", approval_status="pending"),
+            _source_row(source_id="src-pending", source_approval_status="pending"),
         ]
     )
 
@@ -33,10 +36,10 @@ def test_filter_collectable_sources_keeps_only_eligible_rows():
 
 
 def test_no_approved_source_means_collection_skipped_safely():
-    eligible, blocked = filter_collectable_sources(
-        [_source_row(decision="needs_manual_review", approval_status="pending")]
+    eligible, blocked = filter_approved_sources(
+        [_source_row(decision="needs_manual_review", source_approval_status="pending")]
     )
 
     assert eligible == []
     assert blocked
-    assert NO_ELIGIBLE_MESSAGE == "No approved crawl-eligible sources found. Collection skipped."
+    assert NO_APPROVED_SOURCES_MESSAGE == "No approved sources found. Collection skipped safely."
