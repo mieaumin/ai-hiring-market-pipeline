@@ -7,7 +7,7 @@ Terms pages, APIs, or live websites.
 from __future__ import annotations
 
 
-ALLOWED_SOURCE_GRADES = {"A", "B", "C", "D"}
+ALLOWED_SOURCE_GRADES = {"A", "B", "C"}
 ALLOWED_APPROVAL_STATUS = {"not_required", "approved"}
 ALLOWED_ROBOTS_STATUS = {"allowed", "partially_allowed"}
 ALLOWED_TERMS_STATUS = {"allowed", "limited"}
@@ -31,7 +31,6 @@ def explain_blocking_reason(row: dict) -> list[str]:
     reasons: list[str] = []
     decision = _normalized(row, "decision")
     grade = str(row.get("source_grade", "")).strip().upper()
-    source_type = _normalized(row, "source_type")
     approval_status = _normalized(row, "approval_status")
     robots_status = _normalized(row, "robots_target_path_status")
     terms_status = _normalized(row, "terms_collection_policy")
@@ -57,9 +56,9 @@ def explain_blocking_reason(row: dict) -> list[str]:
         reasons.append("anti-bot high")
     if not _is_true(row, "public_html_access"):
         reasons.append("public HTML unavailable")
-    if (
-        grade == "D" or _is_true(row, "api_required") or "api" in source_type
-    ) and approval_status != "approved":
+    if grade == "D":
+        reasons.append("manual or legal review required")
+    if _is_true(row, "api_required") and approval_status != "approved":
         reasons.append("API approval pending")
     if approval_status not in ALLOWED_APPROVAL_STATUS:
         if "approval pending" not in reasons and "rejected source" not in reasons:

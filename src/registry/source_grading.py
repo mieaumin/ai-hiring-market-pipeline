@@ -27,42 +27,42 @@ SOURCE_GRADE_POLICIES = {
         manual_review_required=False,
         human_approval_required=False,
         default_approval_status="not_required",
-        use_policy="usable after basic automated checks",
+        use_policy="can be approved if policy and evidence are valid",
     ),
     "B": SourceGradePolicy(
         grade="B",
         manual_review_required=True,
         human_approval_required=True,
         default_approval_status="pending",
-        use_policy="requires human review before use",
+        use_policy="can be approved if public access and policy evidence are valid",
     ),
     "C": SourceGradePolicy(
         grade="C",
         manual_review_required=True,
         human_approval_required=True,
         default_approval_status="pending",
-        use_policy="requires human review and explicit approval before use",
+        use_policy="can be approved only after careful human review",
     ),
     "D": SourceGradePolicy(
         grade="D",
         manual_review_required=True,
         human_approval_required=True,
         default_approval_status="pending",
-        use_policy="approval pending / manual approval required",
+        use_policy="must remain needs_manual_review or needs_legal_review",
     ),
     "E": SourceGradePolicy(
         grade="E",
         manual_review_required=True,
         human_approval_required=True,
         default_approval_status="rejected",
-        use_policy="avoid in MVP",
+        use_policy="reject",
     ),
     "F": SourceGradePolicy(
         grade="F",
         manual_review_required=False,
         human_approval_required=False,
         default_approval_status="rejected",
-        use_policy="prohibited",
+        use_policy="reject",
     ),
 }
 
@@ -102,9 +102,9 @@ def can_move_to_master(row: dict, automated_checks_passed: bool = False) -> bool
 
     if grade == "A":
         return automated_checks_passed and status in {"", "not_required"}
-    if grade in {"B", "C", "D"}:
+    if grade in {"B", "C"}:
         return status == "approved"
-    if grade in {"E", "F"}:
+    if grade in {"D", "E", "F"}:
         return False
     return False
 
@@ -126,4 +126,3 @@ def validate_source_approval_fields(row: dict) -> tuple[bool, str]:
         return False, "human_approval_required_mismatch"
 
     return True, "ok"
-

@@ -39,17 +39,19 @@ def has_blocking_policy_risk(row: dict) -> bool:
 
 def recommended_grade_from_policy(row: dict) -> str:
     """Recommend a conservative grade from local policy fields."""
-    if has_blocking_policy_risk(row):
+    robots_status = str(row.get("robots_target_path_status", "")).strip().lower()
+    if robots_status in {"blocked", "disallowed"}:
         return "F"
+    if has_blocking_policy_risk(row):
+        return "E"
     if str(row.get("api_required", "")).strip().lower() in {"true", "yes"}:
         return "D"
     if str(row.get("terms_collection_policy", "")).strip().lower() in {"unclear", "unknown"}:
-        return "E"
+        return "D"
     if str(row.get("source_type", "")).strip().lower() in {"ats", "public_ats", "public_endpoint"}:
         return "B"
     if str(row.get("source_type", "")).strip().lower() in {"company_career_page", "career_page"}:
         return "C"
     if str(row.get("source_type", "")).strip().lower() in {"official", "official_source"}:
         return "A"
-    return "E"
-
+    return "D"

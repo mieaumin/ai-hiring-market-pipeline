@@ -1,6 +1,6 @@
-# Phase 3 - JD Collection
+# Phase 4 - JD Collection from Approved Sources Only
 
-Phase 3 is the approved-source-only collection phase for AI-related public JD candidates.
+Phase 4 is the approved-source-only collection phase for AI-related public JD candidates.
 
 This repository implements a first conservative collection-ready runner. It does not perform broad crawling. It reads only `master/source_registry_master.csv` and stops safely when no approved crawl-eligible source exists.
 
@@ -37,7 +37,7 @@ approved source registry
 `src/registry/collection_guard.py` blocks collection unless:
 
 - `decision = approved`
-- `source_grade` is A, B, C, or D
+- `source_grade` is A, B, or C
 - `approval_status` is `not_required` or `approved`
 - `robots_target_path_status` is `allowed` or `partially_allowed`
 - `terms_collection_policy` is `allowed` or `limited`
@@ -71,7 +71,8 @@ and no network collection is attempted.
 ## Acceptance Criteria
 
 - The source exists in `master/source_registry_master.csv`.
-- The source is Grade A with automated checks passed, or Grade B/C/D with human `approval_status = approved`.
+- The source is Grade A with automated checks passed, or Grade B/C with human `approval_status = approved`.
+- Grade D, E, and F sources do not collect JDs.
 - Collection scope is documented.
 - JD records preserve source links.
 - Request volume remains conservative.

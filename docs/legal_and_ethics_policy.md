@@ -1,6 +1,8 @@
 # Legal and Ethics Policy
 
-This project is a research MVP. It must prioritize legal, ethical, and policy-compliant collection.
+This project is a Korean AI hiring market research MVP. It must prioritize legal, ethical, and policy-compliant collection.
+
+The target market is Korea. Global ATS systems are treated only as infrastructure that Korean or Korea-relevant organizations may use; they are not a reason to broaden collection into foreign job markets.
 
 ## What We Avoid
 
@@ -35,6 +37,10 @@ Before adding a new collector, the source must be entered into the source regist
 The approved-source-only runner can collect only from `master/source_registry_master.csv` rows that pass the collection guard. A source is blocked if it is not approved, has pending/rejected/expired approval, is Grade E or F, has robots.txt or Terms restrictions, requires login or CAPTCHA, has high anti-bot risk, lacks public HTML access, or has unresolved API approval requirements.
 
 If no approved crawl-eligible source exists, collection is skipped. The runner must not manually mark sources as approved, reinterpret unclear policy, or collect from risky sources.
+
+## Korean Job-Site Discovery Boundary
+
+Phase 0 discovers Korean job posting websites, but discovery is not approval. A discovered site must pass evidence review, source screening, and approval before it can be used for JD collection.
 
 ## Future JD-Resume Matching
 

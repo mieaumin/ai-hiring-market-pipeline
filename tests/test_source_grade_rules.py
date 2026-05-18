@@ -15,8 +15,8 @@ def test_grade_a_is_only_directly_usable_after_automated_checks():
     assert can_move_to_master(row, automated_checks_passed=True)
 
 
-def test_grades_b_c_d_require_human_approval():
-    for grade in ["B", "C", "D"]:
+def test_grades_b_c_require_human_approval_and_approved_status():
+    for grade in ["B", "C"]:
         assert requires_human_approval(grade)
         assert default_approval_status(grade) == "pending"
         assert not can_move_to_master(
@@ -29,8 +29,10 @@ def test_grades_b_c_d_require_human_approval():
         )
 
 
-def test_grade_e_and_f_never_move_to_master_for_mvp():
-    for grade in ["E", "F"]:
+def test_grade_d_e_and_f_never_move_to_master_for_mvp():
+    assert requires_human_approval("D")
+    assert default_approval_status("D") == "pending"
+    for grade in ["D", "E", "F"]:
         assert not can_move_to_master(
             {"source_grade": grade, "approval_status": "approved"},
             automated_checks_passed=True,
@@ -48,7 +50,7 @@ def test_local_grade_source_helper_is_conservative_for_blockers():
                 "terms_collection_policy": "allowed",
             }
         )
-        == "F"
+        == "E"
     )
     assert (
         grade_source(

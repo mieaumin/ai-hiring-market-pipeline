@@ -1,0 +1,18 @@
+lineage_types:
+  canonical_jd:
+    description: The most authoritative observed JD record.
+  mirrored_jd:
+    description: A JD copied or mirrored from another source.
+  aggregator_jd:
+    description: A JD listed by an aggregator or broad job platform.
+  reposted_jd:
+    description: A reposted version of a JD that may differ in freshness or detail.
+  unknown:
+    description: Lineage cannot yet be determined.
+
+canonical_source_priority:
+  - approved_official_api
+  - approved_official_ats_endpoint
+  - approved_company_career_page
+  - approved_korean_job_site_source
+  - aggregator_or_repost

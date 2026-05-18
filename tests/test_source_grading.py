@@ -17,8 +17,8 @@ def test_grade_a_can_pass_without_human_approval_when_automated_checks_pass():
     assert not can_move_to_master(row, automated_checks_passed=False)
 
 
-def test_grades_b_c_d_require_approved_human_status():
-    for grade in ["B", "C", "D"]:
+def test_grades_b_c_require_approved_human_status():
+    for grade in ["B", "C"]:
         pending = {"source_grade": grade, "approval_status": "pending"}
         approved = {"source_grade": grade, "approval_status": "approved"}
 
@@ -28,8 +28,10 @@ def test_grades_b_c_d_require_approved_human_status():
         assert can_move_to_master(approved, automated_checks_passed=False)
 
 
-def test_grade_e_is_rejected_for_mvp_and_grade_f_is_prohibited():
-    for grade in ["E", "F"]:
+def test_grade_d_requires_review_and_e_f_are_rejected():
+    assert requires_human_approval("D")
+    assert default_approval_status("D") == "pending"
+    for grade in ["D", "E", "F"]:
         row = {"source_grade": grade, "approval_status": "approved"}
 
         assert not can_move_to_master(row, automated_checks_passed=True)

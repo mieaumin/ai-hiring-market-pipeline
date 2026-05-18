@@ -26,14 +26,15 @@ approved_source_requirement:
     source_grade: A
     allowed_approval_status:
       - not_required
-  grade_b_c_d:
+      - approved
+  grade_b_c:
     source_grade:
       - B
       - C
-      - D
     allowed_approval_status:
       - approved
   blocked_grades:
+    - D
     - E
     - F
 
@@ -46,4 +47,3 @@ ai_relevance_requirement:
     - AI Analyst
 
 quality_score_threshold: 70
-

@@ -47,12 +47,12 @@ Without traceable evidence, a site must stay in `needs_review`.
 
 - Grade A: official API available
 - Grade B: public ATS/API endpoint available
-- Grade C: public career/job page with acceptable robots.txt and Terms of Service
-- Grade D: unclear policy or general scraping needed
-- Grade E: login/CAPTCHA/anti-bot/prohibited collection
-- Grade F: unusable or blocked
+- Grade C: public company career page or public job page with acceptable robots.txt and Terms of Service
+- Grade D: unclear policy, general scraping needed, or human/legal review required
+- Grade E: login, CAPTCHA, anti-bot bypass, or prohibited automated collection required
+- Grade F: unusable, blocked, or legally/policy-wise rejected
 
-Only A, B, and carefully reviewed C can be approved. D requires manual or legal review. E and F must be rejected.
+Only A, B, and carefully reviewed C can be approved. D must remain `needs_manual_review` or `needs_legal_review`. E and F must be rejected.
 
 ## Hard Approval Blockers
 

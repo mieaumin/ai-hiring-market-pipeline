@@ -1,12 +1,12 @@
-# Phase 2 - Source Discovery and Verification
+# Phase 2/3 - Company Source Discovery and Source Verification
 
-Phase 2 finds and verifies each approved company's job posting source.
+Phase 2 discovers each approved company's job posting source. Phase 3 verifies whether that company-specific source is usable.
 
 This phase is schema-first and review-first. It does not implement live collection, scraping, browser automation, API integration, hidden endpoint probing, CAPTCHA solving, or anti-bot bypass.
 
 ## Goal
 
-Find and verify each approved company's job posting source.
+Find and verify each approved company's job posting source without collecting JDs.
 
 ## Flow
 
@@ -44,14 +44,14 @@ company_registry_master
 
 | Grade | Meaning | Use policy |
 | --- | --- | --- |
-| A | Publicly accessible official source with no approval required | Usable after basic automated checks |
-| B | Public ATS or public endpoint | Requires human review before use |
-| C | Public company career page with acceptable robots.txt and Terms of Service | Requires human review and explicit approval before use |
-| D | Official API or source requiring manual application, approval, contract, institutional access, or API key issuance | Approval pending / manual approval required |
-| E | General scraping required or policy unclear | Avoid in MVP |
-| F | Login required, CAPTCHA required, anti-bot bypass required, robots blocked, or Terms of Service prohibit collection | Prohibited |
+| A | Official API available | Can be approved if policy and evidence are valid |
+| B | Public ATS/API endpoint available | Can be approved if public access and policy evidence are valid |
+| C | Public company career page or public job page with acceptable robots.txt and Terms of Service | Can be approved only after careful human review |
+| D | Unclear policy, general scraping needed, or human/legal review required | Must remain `needs_manual_review` or `needs_legal_review` |
+| E | Login, CAPTCHA, anti-bot bypass, or prohibited automated collection required | Reject |
+| F | Unusable, blocked, or legally/policy-wise rejected | Reject |
 
-Only Grade A can be considered directly usable without manual approval. Grades B, C, and D require human `approval_status = approved` before use. Grade E is rejected for the MVP unless later re-reviewed. Grade F is prohibited.
+Only A, B, and carefully reviewed C can be approved. Grade D must remain in manual or legal review. Grades E and F are rejected.
 
 ## Outputs
 
@@ -66,7 +66,7 @@ Only Grade A can be considered directly usable without manual approval. Grades B
 - Source discovery starts only from approved company records.
 - Source policy evidence is traceable.
 - Source grades are explainable.
-- Grade B, C, and D sources do not move forward until human approval is recorded.
+- Grade B and C sources do not move forward until human approval is recorded.
+- Grade D sources remain in manual or legal review and do not move forward in the MVP.
 - Grade E and F sources do not move forward in the MVP.
 - Source registry staging is separate from source registry master.
-

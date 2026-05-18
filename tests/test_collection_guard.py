@@ -28,14 +28,14 @@ def test_grade_a_not_required_can_collect_if_checks_pass():
     assert validate_source_before_collection(row) == (True, [])
 
 
-def test_grades_b_c_d_cannot_collect_unless_approved():
-    for grade in ["B", "C", "D"]:
+def test_grades_b_c_cannot_collect_unless_approved():
+    for grade in ["B", "C"]:
         assert not is_source_collectable(_source_row(source_grade=grade, approval_status="pending"))
         assert is_source_collectable(_source_row(source_grade=grade, approval_status="approved"))
 
 
-def test_grade_e_and_f_cannot_collect():
-    for grade in ["E", "F"]:
+def test_grade_d_e_and_f_cannot_collect():
+    for grade in ["D", "E", "F"]:
         row = _source_row(source_grade=grade, approval_status="approved")
 
         assert not is_source_collectable(row)
@@ -66,8 +66,7 @@ def test_api_required_blocks_collection_until_approved():
     assert "API approval pending" in explain_blocking_reason(row)
 
 
-def test_api_source_type_blocks_collection_until_approved():
+def test_official_api_source_type_does_not_block_grade_a_by_name_only():
     row = _source_row(source_type="official_api", approval_status="not_required")
 
-    assert not is_source_collectable(row)
-    assert "API approval pending" in explain_blocking_reason(row)
+    assert is_source_collectable(row)

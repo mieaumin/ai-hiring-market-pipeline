@@ -55,15 +55,15 @@ def test_jd_without_title_fails_quality_gate():
     assert any(reason.startswith("missing_required_fields") for reason in result.reasons)
 
 
-def test_grades_b_c_d_need_approved_source_status_for_jd_quality_gate():
-    for grade in ["B", "C", "D"]:
+def test_grades_b_c_need_approved_source_status_for_jd_quality_gate():
+    for grade in ["B", "C"]:
         assert source_approval_is_valid(
             _jd_record(source_grade=grade, source_approval_status="approved")
         )
 
 
-def test_grade_e_and_f_sources_never_pass_jd_source_approval():
-    for grade in ["E", "F"]:
+def test_grade_d_e_and_f_sources_never_pass_jd_source_approval():
+    for grade in ["D", "E", "F"]:
         assert not source_approval_is_valid(
             _jd_record(source_grade=grade, source_approval_status="approved")
         )

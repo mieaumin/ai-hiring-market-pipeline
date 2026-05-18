@@ -1,0 +1,19 @@
+relationship_types:
+  aggregates:
+    description: A source lists jobs from multiple downstream organizations or sources.
+  mirrors:
+    description: A source mirrors another source's JD content.
+  links_to:
+    description: A source links users to another source.
+  official_source_for:
+    description: A source is the official hiring source for a company or role.
+  uses_ats:
+    description: A company or career page uses a detected ATS infrastructure.
+  exposes_endpoint:
+    description: A source exposes an endpoint such as JSON, RSS, sitemap, or approved API.
+  contains_jd:
+    description: A source contains a JD record or JD detail page.
+  duplicates:
+    description: A JD or source record duplicates another observed record.
+  canonicalizes_to:
+    description: A duplicate, mirrored, or aggregator record maps to a canonical source or JD.

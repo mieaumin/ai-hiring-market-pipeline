@@ -49,12 +49,12 @@ For Korean job-site screening:
 
 - A = official API available
 - B = public ATS/API endpoint available
-- C = public career/job page with acceptable robots.txt and Terms of Service
-- D = unclear policy or general scraping needed
-- E = login/CAPTCHA/anti-bot/prohibited collection
-- F = unusable or blocked
+- C = public company career page or public job page with acceptable robots.txt and Terms of Service
+- D = unclear policy, general scraping needed, or human/legal review required
+- E = login, CAPTCHA, anti-bot bypass, or prohibited automated collection required
+- F = unusable, blocked, or legally/policy-wise rejected
 
-Only A, B, and carefully reviewed C can be approved. D must require manual or legal review. E and F must be rejected.
+Only A, B, and carefully reviewed C can be approved. D must remain `needs_manual_review` or `needs_legal_review`. E and F must be rejected.
 
 ## Required Flow
 
@@ -71,14 +71,14 @@ raw_job_site_discovery
 
 | Grade | Meaning | Use policy |
 | --- | --- | --- |
-| A | Publicly accessible official source with no approval required | Usable after basic automated checks |
-| B | Public ATS or public endpoint | Requires human review before use |
-| C | Public company career page with acceptable robots.txt and Terms of Service | Requires human review and explicit approval before use |
-| D | Official API or source requiring manual application, approval, contract, institutional access, or API key issuance | Approval pending / manual approval required |
-| E | General scraping required or policy unclear | Avoid in MVP |
-| F | Login required, CAPTCHA required, anti-bot bypass required, robots blocked, or Terms of Service prohibit collection | Prohibited |
+| A | Official API available | Can be approved if policy and evidence are valid |
+| B | Public ATS/API endpoint available | Can be approved if public access and policy evidence are valid |
+| C | Public company career page or public job page with acceptable robots.txt and Terms of Service | Can be approved only after careful human review |
+| D | Unclear policy, general scraping needed, or human/legal review required | Must remain `needs_manual_review` or `needs_legal_review` |
+| E | Login, CAPTCHA, anti-bot bypass, or prohibited automated collection required | Reject |
+| F | Unusable, blocked, or legally/policy-wise rejected | Reject |
 
-Only Grade A can be considered directly usable without manual approval. "Carefully reviewed" means human approval is required.
+Grade A still requires valid policy and evidence checks. "Carefully reviewed" means human approval is required for B and C sources before use.
 
 ## Approval Status
 
@@ -92,17 +92,17 @@ Allowed `approval_status` values:
 
 Rules:
 
-- Grade A: `human_approval_required = false`, `approval_status = not_required`
+- Grade A: may use `approval_status = not_required` after valid policy/evidence checks
 - Grade B: `human_approval_required = true`, `approval_status = pending` until reviewed
 - Grade C: `human_approval_required = true`, `approval_status = pending` until reviewed
-- Grade D: `human_approval_required = true`, `approval_status = pending` until external/API approval is completed
-- Grade E: `human_approval_required = true`, `approval_status = rejected` for MVP unless later re-reviewed
-- Grade F: `human_approval_required = false`, `approval_status = rejected`
+- Grade D: `human_approval_required = true`, remains pending review and cannot be used in the MVP until ambiguity is resolved
+- Grade E: rejected
+- Grade F: rejected
 
 A source must not move to an approved source registry unless:
 
 - `source_grade` is A and automated checks passed, or
-- `source_grade` is B, C, or D and human `approval_status` is `approved`.
+- `source_grade` is B or C and human `approval_status` is `approved`.
 
 ## Strict Approval Gates
 

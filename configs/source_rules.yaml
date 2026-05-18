@@ -1,47 +1,47 @@
 source_grades:
   A:
-    label: Publicly accessible official source with no approval required
-    use_policy: usable after basic automated checks
+    label: Official API available
+    use_policy: can be approved if policy and evidence are valid
     manual_review_required: false
     human_approval_required: false
     default_approval_status: not_required
     can_move_to_master_when: automated_checks_passed
 
   B:
-    label: Public ATS or public endpoint
-    use_policy: requires human review before use
+    label: Public ATS/API endpoint available
+    use_policy: can be approved if public access and policy evidence are valid
     manual_review_required: true
     human_approval_required: true
     default_approval_status: pending
     can_move_to_master_when: human_approval_status_is_approved
 
   C:
-    label: Public company career page with acceptable robots.txt and Terms of Service
-    use_policy: requires human review and explicit approval before use
+    label: Public company career page or public job page with acceptable robots.txt and Terms of Service
+    use_policy: can be approved only after careful human review
     manual_review_required: true
     human_approval_required: true
     default_approval_status: pending
     can_move_to_master_when: human_approval_status_is_approved
 
   D:
-    label: Official API or source requiring manual application, approval, contract, institutional access, or API key issuance
-    use_policy: approval pending / manual approval required
+    label: Unclear policy, general scraping needed, or human/legal review required
+    use_policy: must remain needs_manual_review or needs_legal_review
     manual_review_required: true
     human_approval_required: true
     default_approval_status: pending
-    can_move_to_master_when: external_or_api_approval_completed_and_human_approval_status_is_approved
+    can_move_to_master_when: not_allowed_until_ambiguity_is_resolved
 
   E:
-    label: General scraping required or policy unclear
-    use_policy: avoid in MVP
+    label: Login, CAPTCHA, anti-bot bypass, or prohibited automated collection required
+    use_policy: reject
     manual_review_required: true
     human_approval_required: true
     default_approval_status: rejected
-    can_move_to_master_when: not_allowed_in_mvp_unless_later_re_reviewed
+    can_move_to_master_when: never
 
   F:
-    label: Login required, CAPTCHA required, anti-bot bypass required, robots blocked, or Terms of Service prohibit collection
-    use_policy: prohibited
+    label: Unusable, blocked, or legally/policy-wise rejected
+    use_policy: reject
     manual_review_required: false
     human_approval_required: false
     default_approval_status: rejected
@@ -56,11 +56,12 @@ approval_status_values:
 
 master_promotion_rules:
   - source_grade_is_A_and_automated_checks_passed
-  - source_grade_is_B_C_or_D_and_human_approval_status_is_approved
+  - source_grade_is_B_or_C_and_human_approval_status_is_approved
 
 blocking_rules:
-  - grade_E_is_rejected_for_mvp_unless_later_re_reviewed
-  - grade_F_is_prohibited
+  - grade_D_requires_manual_or_legal_review
+  - grade_E_is_rejected
+  - grade_F_is_rejected
   - pending_approval_cannot_move_to_master
   - expired_approval_cannot_move_to_master
   - rejected_approval_cannot_move_to_master
@@ -111,10 +112,10 @@ phase0_5_site_screening_grades:
   A: official_api_available
   B: public_ats_or_api_endpoint_available
   C: public_career_or_job_page_with_acceptable_robots_and_terms
-  D: unclear_policy_or_general_scraping_needed
-  E: login_captcha_antibot_or_prohibited_collection
-  F: unusable_or_blocked
+  D: unclear_policy_general_scraping_or_human_legal_review_required
+  E: login_captcha_antibot_or_prohibited_automated_collection_required
+  F: unusable_blocked_or_legally_policy_rejected
   approval_rules:
     - only_A_B_and_carefully_reviewed_C_can_be_approved
-    - D_requires_manual_or_legal_review
+    - D_must_remain_needs_manual_review_or_needs_legal_review
     - E_and_F_must_be_rejected

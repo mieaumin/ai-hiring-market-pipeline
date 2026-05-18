@@ -29,7 +29,7 @@ def source_approval_is_valid(record: dict) -> bool:
     status = str(record.get("source_approval_status", "")).strip().lower()
     if grade == "A":
         return status in {"not_required", "approved"}
-    if grade in {"B", "C", "D"}:
+    if grade in {"B", "C"}:
         return status == "approved"
     return False
 

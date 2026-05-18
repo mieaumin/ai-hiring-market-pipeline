@@ -1,6 +1,6 @@
-# Phase 4 - JD Quality Filtering and Staging
+# Phase 5 - JD Normalization, Deduplication, Labeling
 
-Phase 4 filters unusable, non-AI, duplicate, and low-quality JDs before master dataset promotion.
+Phase 5 filters unusable, non-AI, duplicate, and low-quality JDs before master dataset promotion.
 
 This phase protects the master dataset from raw or weak JD records. It does not fetch live pages or call external APIs.
 
@@ -49,4 +49,3 @@ raw_jds
 - Duplicate JDs are removed before staging.
 - Each staged JD links back to an approved source.
 - Staging remains separate from the master dataset.
-

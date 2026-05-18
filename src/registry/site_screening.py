@@ -147,7 +147,7 @@ def screen_site(site_row: dict, evidence_rows: list[dict] | None = None) -> Site
         approval_status = "pending"
         manual_review_required = True
         human_approval_required = True
-        reasons.append("grade_D_unclear_policy_or_general_scraping_needed")
+        reasons.append("grade_D_unclear_policy_general_scraping_or_human_legal_review_required")
     elif grade in APPROVABLE_GRADES:
         decision = "needs_manual_review"
         eligibility = "needs_review"

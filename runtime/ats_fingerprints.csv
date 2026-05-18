@@ -1,0 +1,1 @@
+ats_id,source_id,company_id,company_name,ats_type,ats_confidence,ats_detection_method,collector_strategy,json_endpoint_detected,rss_detected,sitemap_detected,structure_stability,maintenance_risk,anti_bot_risk,evidence_url,review_status,reviewer,reviewed_at,notes

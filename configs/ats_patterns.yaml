@@ -1,0 +1,103 @@
+ats_patterns:
+  greenhouse:
+    display_name: Greenhouse
+    infrastructure_scope_note: Infrastructure pattern only; not a foreign-market target.
+    common_url_patterns:
+      - boards.greenhouse.io
+      - job-boards.greenhouse.io
+    expected_endpoint_types:
+      - public_html
+      - json_endpoint_if_public
+    structure_stability: high
+    typical_maintenance_risk: low
+    caution_notes: Use only when the Korean or Korea-relevant company source is approved.
+  lever:
+    display_name: Lever
+    infrastructure_scope_note: Infrastructure pattern only; not a foreign-market target.
+    common_url_patterns:
+      - jobs.lever.co
+    expected_endpoint_types:
+      - public_html
+      - json_endpoint_if_public
+    structure_stability: high
+    typical_maintenance_risk: low
+    caution_notes: Use only after source policy and company relevance are reviewed.
+  ashby:
+    display_name: Ashby
+    infrastructure_scope_note: Infrastructure pattern only; not a foreign-market target.
+    common_url_patterns:
+      - jobs.ashbyhq.com
+    expected_endpoint_types:
+      - public_html
+      - json_endpoint_if_public
+    structure_stability: medium
+    typical_maintenance_risk: medium
+    caution_notes: Confirm public access and approved source status before any collection.
+  workday:
+    display_name: Workday
+    infrastructure_scope_note: Infrastructure pattern only; not a foreign-market target.
+    common_url_patterns:
+      - myworkdayjobs.com
+    expected_endpoint_types:
+      - public_html
+      - approved_api_if_available
+    structure_stability: medium
+    typical_maintenance_risk: high
+    caution_notes: Dynamic behavior and policy constraints often require careful review.
+  smartrecruiters:
+    display_name: SmartRecruiters
+    infrastructure_scope_note: Infrastructure pattern only; not a foreign-market target.
+    common_url_patterns:
+      - jobs.smartrecruiters.com
+    expected_endpoint_types:
+      - public_html
+      - json_endpoint_if_public
+    structure_stability: medium
+    typical_maintenance_risk: medium
+    caution_notes: Review endpoint policy and reuse limits.
+  sap_successfactors:
+    display_name: SAP SuccessFactors
+    infrastructure_scope_note: Infrastructure pattern only; not a foreign-market target.
+    common_url_patterns:
+      - successfactors.com
+      - sapsf.com
+    expected_endpoint_types:
+      - public_html
+      - approved_api_if_available
+    structure_stability: low
+    typical_maintenance_risk: high
+    caution_notes: Often requires strong policy review due to dynamic or access-controlled flows.
+  wanted_ats_or_korean_platform_if_known:
+    display_name: Wanted or Korean platform-backed hiring page
+    infrastructure_scope_note: Korea-relevant platform pattern, not automatic collection approval.
+    common_url_patterns:
+      - wanted.co.kr
+    expected_endpoint_types:
+      - public_html
+      - approved_api_if_available
+    structure_stability: unknown
+    typical_maintenance_risk: unknown
+    caution_notes: Treat as a Korean job-site/platform source requiring strict screening.
+  custom_company_career_page:
+    display_name: Custom company career page
+    infrastructure_scope_note: Company-owned public career infrastructure.
+    common_url_patterns:
+      - careers
+      - recruit
+      - jobs
+    expected_endpoint_types:
+      - public_html
+      - sitemap_if_public
+      - rss_if_public
+    structure_stability: variable
+    typical_maintenance_risk: medium
+    caution_notes: Must review robots.txt, terms, and public access before collection.
+  unknown:
+    display_name: Unknown ATS or source infrastructure
+    infrastructure_scope_note: Unknown pattern requiring manual review.
+    common_url_patterns: []
+    expected_endpoint_types:
+      - unknown
+    structure_stability: unknown
+    typical_maintenance_risk: high
+    caution_notes: Do not collect until the infrastructure and policy posture are reviewed.

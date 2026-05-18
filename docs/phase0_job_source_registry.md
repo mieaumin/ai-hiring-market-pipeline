@@ -108,14 +108,14 @@ Allowed `site_type` examples:
 
 | Grade | Meaning | Use policy |
 | --- | --- | --- |
-| A | Publicly accessible official source with no approval required | Usable after basic automated checks |
-| B | Public ATS or public endpoint | Requires human review before use |
-| C | Public company career page with acceptable robots.txt and Terms of Service | Requires human review and explicit approval before use |
-| D | Official API or source requiring manual application, approval, contract, institutional access, or API key issuance | Approval pending / manual approval required |
-| E | General scraping required or policy unclear | Avoid in MVP |
-| F | Login required, CAPTCHA required, anti-bot bypass required, robots blocked, or Terms of Service prohibit collection | Prohibited |
+| A | Official API available | Can be approved if policy and evidence are valid |
+| B | Public ATS/API endpoint available | Can be approved if public access and policy evidence are valid |
+| C | Public company career page or public job page with acceptable robots.txt and Terms of Service | Can be approved only after careful human review |
+| D | Unclear policy, general scraping needed, or human/legal review required | Must remain `needs_manual_review` or `needs_legal_review` |
+| E | Login, CAPTCHA, anti-bot bypass, or prohibited automated collection required | Reject |
+| F | Unusable, blocked, or legally/policy-wise rejected | Reject |
 
-Only Grade A can be considered directly usable without manual approval. Grades B, C, and D require human approval before use. Grade E is rejected for the MVP unless later re-reviewed. Grade F is prohibited.
+Only A, B, and carefully reviewed C can be approved. Grade D remains in manual or legal review. Grades E and F are rejected.
 
 ## Strict Evidence Review
 

@@ -1,6 +1,6 @@
 # Phase 5 - JD Master Dataset
 
-Phase 5 promotes only validated high-quality AI JDs from staging into the master dataset.
+The master dataset is the final output of Phase 5 after JD normalization, deduplication, labeling, and quality gate review.
 
 ## Goal
 
@@ -35,4 +35,3 @@ jd_staging
 - Every master JD has a `source_id`, `company_id`, `job_url`, `content_hash`, and `quality_score`.
 - Every promoted JD has a valid source approval state.
 - Master promotion reason is auditable through quality gate outputs.
-

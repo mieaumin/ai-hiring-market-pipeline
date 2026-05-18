@@ -33,7 +33,7 @@ phases:
       - reuse_restriction_critical
 
   phase1_company_discovery:
-    name: Company Discovery
+    name: Korean AI Hiring Company Discovery
     input_files:
       - runtime/raw_company_discovery.csv
       - runtime/company_evidence.csv
@@ -67,7 +67,7 @@ phases:
       - runtime/source_verification.csv
     output_files:
       - master/source_registry_master.csv
-    promotion_rule: Grade A must pass automated checks, or Grade B/C/D must have human approval_status approved.
+    promotion_rule: Grade A must pass automated checks, or Grade B/C must have human approval_status approved; Grade D remains in manual/legal review.
     blocking_conditions:
       - grade_e
       - grade_f
@@ -76,7 +76,7 @@ phases:
       - approval_expired
 
   phase4_jd_collection:
-    name: JD Collection from Approved Sources
+    name: JD Collection from Approved Sources Only
     input_files:
       - master/source_registry_master.csv
     output_files:
@@ -90,7 +90,7 @@ phases:
       - prohibited_collection_method
 
   phase5_jd_normalization_and_labeling:
-    name: JD Normalization and Labeling
+    name: JD Normalization, Deduplication, Labeling
     input_files:
       - data/raw/raw_jds.csv
     output_files:

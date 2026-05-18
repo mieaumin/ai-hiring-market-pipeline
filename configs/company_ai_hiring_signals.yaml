@@ -1,0 +1,21 @@
+signals:
+  ai_hiring_likelihood_score:
+    description: Overall likelihood that the company hires AI, data, ML, LLM, research, or analytics talent.
+    score_range: 0-100
+  ai_org_signal:
+    description: Evidence of an AI, data, ML, research, or advanced analytics organization inside the company.
+    score_range: 0-5
+  ai_infrastructure_signal:
+    description: Evidence of AI infrastructure, MLOps, data platforms, model serving, LLM systems, or related technical capability.
+    score_range: 0-5
+  ai_job_presence_signal:
+    description: Evidence of AI-related roles, past postings, current postings, or hiring language.
+    score_range: 0-5
+  ai_transformation_signal:
+    description: Evidence that a non-AI-native organization is applying AI to products, operations, research, or services.
+    score_range: 0-5
+  evidence_quality:
+    description: Reliability, freshness, and traceability of the evidence.
+    score_range: 0-5
+
+screening_note: A company should not be approved only because its name sounds AI-related. Evidence must be traceable.

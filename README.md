@@ -2,208 +2,128 @@
 
 Biz-Voyager-style AI hiring market data pipeline with stricter source compliance review for the HEDING x ModuLabs AIFFELTHON matching MVP and research project.
 
+This project targets the Korean AI hiring market. Target companies are Korean companies and Korea-relevant hiring organizations. Global ATS names such as Greenhouse, Lever, Ashby, Workday, SmartRecruiters, and SAP SuccessFactors are treated only as infrastructure patterns that Korean or Korea-relevant companies may use. They are not foreign-company or foreign-market collection targets.
+
 The long-term goal is to legally collect, validate, normalize, structure, and prepare AI-related job descriptions (JDs) from approved sources so they can later be matched with AI candidate resumes.
 
-Current priority: build the Korean job-site universe first, then screen those sites, before company discovery, company career-page discovery, or JD collection.
+The project starts from Korean job-site discovery, not company discovery. JD collection is blocked until approved sources exist.
 
-This project is not designed for massive crawling. It is designed around:
+This repository is legal, conservative, evidence-first, and research-oriented. It is not designed for massive crawling, access-control bypass, or unapproved data extraction.
 
-- recall-first discovery
-- evidence-first promotion
-- Korean job-site universe discovery before company discovery
-- source compliance first
-- staging/master separation
-- explainability
-- conservative collection policy
-
-The repository includes a first safe approved-source-only collection runner, but the current priority is still Phase 0 discovery and evidence review. The runner does not perform broad crawling, browser automation, LLM API integration, Google Sheets API integration, CAPTCHA bypass, anti-bot evasion, login automation, IP rotation, or access-control bypass. If no crawl-eligible approved source exists, collection is skipped.
-
-## Final Pipeline Architecture
+## Final Pipeline
 
 ```text
-Phase 0 — Korean Job-Site Discovery
-↓
-Phase 0.5 — Job-Site Evidence Review and Source Screening
-↓
-Phase 1 — Company Discovery
-↓
-Phase 2 — Company Source Discovery
-↓
-Phase 3 — Source Verification
-↓
-Phase 4 — JD Collection
-↓
-Phase 5 — JD Normalization and Labeling
-↓
-Phase 6 — Future JD-Resume Matching
+Phase 0 - Korean Job-Site Discovery
+-> Phase 0.5 - Job-Site Evidence Review and Source Screening
+-> Phase 1 - Korean AI Hiring Company Discovery
+-> Phase 2 - Company Source Discovery
+-> Phase 3 - Source Verification
+-> Phase 4 - JD Collection from Approved Sources Only
+-> Phase 5 - JD Normalization, Deduplication, Labeling
+-> Phase 6 - Future JD-Resume Matching
 ```
 
 ```mermaid
 flowchart TD
   P0["Phase 0: Korean Job-Site Discovery"]
-  P05["Phase 0.5: Evidence Review and Site Screening"]
-  P1["Phase 1: Company Discovery"]
+  P05["Phase 0.5: Evidence Review and Source Screening"]
+  P1["Phase 1: Korean AI Hiring Company Discovery"]
   P2["Phase 2: Company Source Discovery"]
   P3["Phase 3: Source Verification"]
-  P4["Phase 4: JD Collection"]
-  P5["Phase 5: JD Normalization and Labeling"]
+  P4["Phase 4: JD Collection from Approved Sources Only"]
+  P5["Phase 5: JD Normalization, Deduplication, Labeling"]
   P6["Phase 6: Future JD-Resume Matching"]
 
   P0 --> P05 --> P1 --> P2 --> P3 --> P4 --> P5 --> P6
 ```
 
-The project follows Biz-Voyager's broad discovery -> evidence review -> screening -> staging -> master philosophy, but applies stricter legal and policy gates before any JD collection.
+Biz-Voyager starts from company discovery and official hiring-source verification. This project adds an earlier Korean job-site universe discovery and screening layer before company discovery, because Korean AI hiring intelligence needs a broader source universe and stricter source compliance gates before any JD collection.
 
-The initial Korean job-site seed list has been created for review only in `config/job_site_candidates.csv` and `runtime/raw_job_site_discovery.csv`. Inclusion in these files does not mean collection is allowed.
+## Operating Model
 
-JD Collection must only happen after both site/source screening and company-specific source verification.
-
-## Phase 0 — Korean Job-Site Discovery
-
-Goal:
-Discover possible Korean job posting websites before company discovery or any JD collection.
-
-Flow:
+The project follows a Biz-Voyager-inspired model:
 
 ```text
-discovery queries
--> raw_job_site_discovery
+broad discovery
+-> evidence review
+-> screening
+-> staging
+-> quality gate
+-> master
 ```
 
-Purpose:
+The project adds stricter Korean source compliance rules:
 
-- discover Korean job posting sources as broadly as possible
-- maximize source recall before filtering for AI relevance
-- record discovery route, query, source URL, confidence, and notes
-- keep all discovered sites as unapproved candidates
+- discovered sites are not approved sources
+- screened sites are not automatically collectable
+- company candidates require traceable AI hiring evidence
+- source approval is mandatory before JD collection
+- no source is used when robots.txt, Terms of Service, login, CAPTCHA, anti-bot controls, or access restrictions block collection
+- no source is approved from fake, untraceable, or invented evidence
 
-Phase 0 is not company career-page discovery. It is not AI-only filtering. It is not JD collection.
+## Korean Market Scope
 
-Discovery routes:
+The repository targets:
 
-- Route A - search-engine-based discovery
-- Route B - reverse-reference discovery
-- Route C - JD-source reverse discovery
+- Korean job posting websites
+- Korean company official career pages
+- Korea-relevant ATS-backed hiring endpoints
+- official APIs where available and approved
+- public ATS/API endpoints where allowed
+- JSON/RSS feeds where allowed
+- sitemap-discoverable public job pages where allowed
 
-Initial candidate categories:
+The project does not target broad foreign job markets. If a global ATS appears, it is handled as hiring infrastructure used by Korean or Korea-relevant organizations.
 
-- general job portals
-- startup hiring platforms
-- public/government job platforms
-- university/internship job boards
-- career communities
-- headhunting/recruiting platforms
-- developer hiring platforms
-- company hiring aggregators
+See [docs/korean_market_scope.md](docs/korean_market_scope.md).
 
-Outputs:
+## Phase Summaries
+
+### Phase 0 - Korean Job-Site Discovery
+
+Discover Korean job posting websites broadly. This phase discovers possible job-site sources, not JDs and not companies.
+
+Outputs include:
 
 - `runtime/raw_job_site_discovery.csv`
 
-## Phase 0.5 — Job-Site Evidence Review and Source Screening
+### Phase 0.5 - Job-Site Evidence Review and Source Screening
 
-Goal:
-Review discovered job sites before they can become approved source candidates.
+Review discovered job sites using legal, technical, and operational evidence.
 
-Flow:
-
-```text
-raw_job_site_discovery
--> site_policy_evidence
--> site_screening_results
--> job_site_registry_staging
--> master/job_source_registry
-```
-
-Purpose:
-
-- review robots.txt and Terms of Service
-- identify API, login, CAPTCHA, anti-bot, and reuse risks
-- reject technically accessible but policy-prohibited sites
-- preserve evidence traceability
-- keep discovered sites out of master until screened
-
-Outputs:
-
-- `runtime/site_policy_evidence.csv`
-- `runtime/site_screening_results.csv`
-- `staging/job_site_registry_staging.csv`
-- `master/job_source_registry.csv`
-
-Core checks:
+Checks include:
 
 - robots.txt
 - Terms of Service
 - API requirement
 - login requirement
 - CAPTCHA
-- anti-bot
+- anti-bot risk
 - public HTML access
 - dynamic rendering risk
-- reuse restrictions
+- reuse and redistribution restrictions
 
-Source grades:
+Outputs include:
 
-- A — Official API available
-- B — Public ATS/API endpoint available
-- C — Public career/job page with acceptable robots.txt and Terms of Service
-- D — Unclear policy or general scraping needed
-- E — Login, CAPTCHA, anti-bot, or prohibited collection
-- F — Unusable or blocked
+- `runtime/site_policy_evidence.csv`
+- `runtime/site_screening_results.csv`
+- `staging/job_site_registry_staging.csv`
+- `master/job_source_registry.csv`
 
-Approval status values:
+### Phase 1 - Korean AI Hiring Company Discovery
 
-- `not_required`
-- `pending`
-- `approved`
-- `rejected`
-- `expired`
+Find companies likely to hire AI talent in Korea. This is AI hiring likelihood, not simple AI company classification.
 
-## Phase 1 — Company Discovery
+Signals include:
 
-Goal:
-Build a broad AI hiring candidate company universe.
+- AI job presence
+- AI organization signal
+- AI infrastructure signal
+- AI transformation signal
+- business AI signal
+- evidence quality
 
-Flow:
-
-```text
-raw_company_discovery
--> company_evidence_review
--> company_registry_staging
--> company_screening
--> master/company_registry_master
-```
-
-Purpose:
-
-- discover AI hiring candidate companies
-- preserve evidence traceability
-- score companies using explainable signals
-- prepare approved companies for source discovery
-
-Discovery routes:
-
-- Route A — Job-site-first: approved job sites -> AI keyword search -> company candidate discovery
-- Route B — Company-first: manual seeds -> startup lists -> AI business evidence -> company candidate discovery
-
-Company signal groups:
-
-- `hiring_signal`
-- `business_ai_signal`
-- `tech_signal`
-- `market_signal`
-- `research_signal`
-- `evidence_quality`
-
-Company status:
-
-- `seeded`
-- `candidate`
-- `needs_review`
-- `approved_for_source_discovery`
-- `rejected`
-
-Outputs:
+Outputs include:
 
 - `runtime/raw_company_discovery.csv`
 - `runtime/company_candidates.csv`
@@ -211,263 +131,92 @@ Outputs:
 - `staging/company_registry_staging.csv`
 - `master/company_registry_master.csv`
 
-## Phase 2 — Company Source Discovery
+See [docs/company_ai_hiring_likelihood.md](docs/company_ai_hiring_likelihood.md).
 
-Goal:
-Map approved or candidate companies to company-specific job sources.
+### Phase 2 - Company Source Discovery
 
-Flow:
+Map reviewed companies to official career pages, approved job-site sources, ATS-backed pages, public endpoints, feeds, or sitemap-discoverable job pages.
 
-```text
-approved company registry
--> source discovery
--> source registry staging
-```
+This phase may detect ATS infrastructure, but ATS detection does not approve collection.
 
-Source types:
+See [docs/ats_intelligence_layer.md](docs/ats_intelligence_layer.md).
 
-- official company career page
-- Greenhouse
-- Lever
-- Ashby
-- Work24
-- public ATS endpoints
-- RSS/sitemap job feeds
+### Phase 3 - Source Verification
 
-Discovery notes:
-
-- identify possible official career pages, ATS pages, and public source links
-- preserve discovery evidence
-- keep source candidates unapproved until Phase 3 verification
+Verify company-specific sources before collection. Source verification uses strict grade and approval rules.
 
 Source grades:
 
-- A — Publicly accessible official source with no approval required
-- B — Public ATS or public endpoint
-- C — Public company career page with acceptable robots.txt and Terms of Service
-- D — Official API or source requiring manual application, approval, contract, institutional access, or API key issuance
-- E — General scraping required or policy unclear
-- F — Login required, CAPTCHA required, anti-bot bypass required, robots blocked, or Terms of Service prohibit collection
+- A: Official API available.
+- B: Public ATS/API endpoint available.
+- C: Public company career page or public job page with acceptable robots and terms.
+- D: Unclear policy, general scraping needed, or human/legal review required.
+- E: Login, CAPTCHA, anti-bot bypass, or prohibited automated collection required.
+- F: Unusable, blocked, or legally/policy-wise rejected.
 
-Only Grade A can be considered directly usable without manual approval. "Carefully reviewed" means human approval is required.
+Only A, B, and carefully reviewed C sources can become approved. D remains in review. E and F are rejected.
 
-Use policy:
+### Phase 4 - JD Collection from Approved Sources Only
 
-- Grade A: usable after basic automated checks
-- Grade B: requires human review before use
-- Grade C: requires human review and explicit approval before use
-- Grade D: approval pending / manual approval required
-- Grade E: avoid in MVP
-- Grade F: prohibited
+Collect public AI-related JDs only from approved sources. If no approved crawl-eligible source exists, collection must be skipped safely.
 
-Approval status values:
+The current repository contains safe approved-source-only collector scaffolding, but live collection is not the current priority and must not run against unapproved sources.
 
-- `not_required`
-- `pending`
-- `approved`
-- `rejected`
-- `expired`
+### Phase 5 - JD Normalization, Deduplication, Labeling
 
-A source must not move to an approved source registry unless:
+Clean, normalize, deduplicate, classify, and label JDs using schema validation, source approval checks, AI role filtering, and duplicate lineage.
 
-- `source_grade` is A and automated checks passed, or
-- `source_grade` is B, C, or D and human `approval_status` is `approved`.
+Target role groups:
 
-Outputs:
-
-- `runtime/source_discovery.csv`
-- `staging/source_registry_staging.csv`
-
-## Phase 3 — Source Verification
-
-Goal:
-Verify company-specific sources before JD collection.
-
-Phase 3 checks official domain match, source grade, approval status, robots compatibility, Terms compatibility, public access, ATS signals, source quality, and maintenance risk.
-
-Outputs:
-
-- `runtime/source_policy_evidence.csv`
-- `runtime/source_verification.csv`
-- `master/source_registry_master.csv`
-
-## Phase 4 — JD Collection
-
-Goal:
-Collect AI-related public JD candidates only from approved sources.
-
-Flow:
-
-```text
-approved source registry
--> JD fetch
--> JD parse
--> JD normalize
--> raw JD storage
-```
-
-Approved-source-only collection is implemented through:
-
-- `src/registry/collection_guard.py`
-- `src/collectors/base_collector.py`
-- `src/collectors/public_html_collector.py`
-- `src/collectors/work24_public_collector.py`
-- `src/collectors/company_career_collector.py`
-- `src/collectors/ats_public_collector.py`
-- `scripts/run_approved_collection.py`
-
-The runner reads `master/source_registry_master.csv` and refuses to collect unless all guard checks pass:
-
-- `decision = approved`
-- `source_grade` is A, B, C, or D
-- `approval_status` is `not_required` or `approved`
-- `robots_target_path_status` is `allowed` or `partially_allowed`
-- `terms_collection_policy` is `allowed` or `limited`
-- no login, CAPTCHA, or high anti-bot risk is present
-- `public_html_access = true`
-
-If no approved crawl-eligible source exists, the runner prints:
-
-```text
-No approved crawl-eligible sources found. Collection skipped.
-```
-
-and no network collection is attempted.
-
-Collection policy:
-
-- conservative request rate
-- no CAPTCHA solving
-- no anti-bot bypass
-- no login automation
-- no hidden endpoints
-- no prohibited scraping
-- no collection from Grade E or Grade F sources
-- no collection from pending, rejected, or expired approvals
-
-Collectors:
-
-- `base_collector.py`
-- `public_html_collector.py`
-- `work24_public_collector.py`
-- `ats_public_collector.py`
-- `company_career_collector.py`
-
-Outputs:
-
-- `data/raw/raw_jds.csv`
-- `data/logs/collection_log.csv`
-- `runtime/errors.csv`
-
-## Phase 5 — JD Normalization and Labeling
-
-Goal:
-Filter unusable, non-AI, duplicate, and low-quality JDs.
-
-Flow:
-
-```text
-raw JDs
--> schema validation
--> AI role filtering
--> deduplication
--> text cleaning
--> staging
-```
-
-Validation rules:
-
-- required fields exist
-- minimum description length
-- AI keyword match
-- taxonomy match
-- source approved
-- duplicate removal
-
-AI role groups:
-
+- AI Analyst
 - AI Engineer
 - AI Researcher
 - AI Scientist
-- AI Analyst
 
-Outputs:
+See [docs/jd_duplicate_lineage.md](docs/jd_duplicate_lineage.md).
 
-- `data/cleaned/cleaned_jds.csv`
-- `staging/jd_staging.csv`
-- `runtime/jd_validation_errors.csv`
+### Phase 6 - Future JD-Resume Matching
 
-## JD Master Dataset
+Prepare structured JD data for future matching against AI candidate resumes through taxonomy alignment, skill normalization, embeddings, semantic similarity, and ranking research.
 
-Goal:
-Promote only validated high-quality AI JDs.
+## Source Relationship Graph
 
-Flow:
+The project stores CSV templates, but the operational model is graph-like:
 
 ```text
-jd_staging
--> quality gate
--> master promotion
--> master dataset
+job_site -> company -> career_page -> ATS -> endpoint -> JD
 ```
 
-Promotion conditions:
+This helps distinguish canonical sources, aggregators, mirrored postings, reposts, and duplicate clusters.
 
-- approved source
-- valid schema
-- AI role classified
-- duplicate removed
-- quality score threshold passed
+See [docs/source_relationship_graph.md](docs/source_relationship_graph.md).
 
-Outputs:
+## Operational Loops
 
-- `master/jd_master_dataset.csv`
-- `data/labeled/labeled_jds.csv`
+The pipeline separates:
 
-## Phase 6 — Future JD-Resume Matching
+- expansion loop: discover new sites, companies, ATS/source patterns, and relationships
+- freshness loop: revisit approved sources, detect changed or inactive JDs, and monitor source health
 
-Goal:
-Prepare structured JD datasets for future resume matching.
+See [docs/operational_loops.md](docs/operational_loops.md).
 
-Future tasks:
+## Compliance and Non-Goals
 
-- taxonomy alignment
-- skill normalization
-- embedding generation
-- semantic similarity
-- resume-JD ranking
-- candidate recommendation
+This project does not implement:
 
-Inputs:
+- illegal scraping
+- browser automation for collection
+- CAPTCHA solving
+- login automation
+- anti-bot bypass
+- IP rotation
+- hidden API abuse
+- LLM API integration
+- Google Sheets API integration
+- source approval automation
+- fake evidence generation
 
-- `master/jd_master_dataset.csv`
-- resume datasets
-- `configs/taxonomy_v1.yaml`
-
-## Global Operating Principles
-
-1. Recall-first discovery
-Collect broadly first. Filter later with evidence and quality gates.
-
-2. Evidence-first promotion
-Nothing moves to master without evidence.
-
-3. Job-site universe before company discovery
-The Korean job-site source universe is built before company discovery and JD collection.
-
-4. Source compliance first
-No source enters collection without review.
-
-   Grade A can proceed after basic automated checks. Grades B, C, and D require human approval before use. Grade E is rejected for the MVP unless later re-reviewed. Grade F is prohibited.
-
-5. Staging/master separation
-Never write raw data directly into master.
-
-6. Explainability
-Every company, source, and JD must preserve why it was discovered, why it was approved, and where it came from.
-
-7. Conservative collection policy
-No illegal scraping, anti-bot evasion, CAPTCHA bypass, or login automation.
+Collection must not proceed when approval is missing, pending, rejected, expired, or unsupported by traceable evidence.
 
 ## Directory Structure
 
@@ -476,47 +225,54 @@ ai-hiring-market-pipeline/
   README.md
 
   docs/
+    korean_market_scope.md
+    pipeline_architecture.md
+    biz_voyager_comparison.md
+    ats_intelligence_layer.md
+    source_relationship_graph.md
+    jd_duplicate_lineage.md
+    operational_loops.md
+    company_ai_hiring_likelihood.md
     phase0_job_site_discovery.md
     phase0_5_site_screening.md
-    job_site_discovery.md
-    source_discovery_routes.md
-    phase0_job_source_registry.md
     phase1_company_discovery.md
     phase2_source_discovery_verification.md
     phase3_jd_collection.md
     phase4_jd_quality_gate.md
     phase5_master_dataset.md
     phase6_jd_resume_matching_research.md
-    pipeline_operations.md
     legal_and_ethics_policy.md
     source_selection_criteria.md
-    taxonomy_v1.md
 
   configs/
-    company_signal_schema.yml
     job_site_discovery_queries.yaml
     job_site_discovery_sources.yaml
     policy_keywords.yaml
+    source_grading_rules.yaml
+    ats_patterns.yaml
+    source_relationship_types.yaml
+    jd_lineage_types.yaml
+    company_ai_hiring_signals.yaml
+    company_signal_schema.yml
     ai_keywords.yaml
     taxonomy_v1.yaml
-    source_rules.yaml
 
   runtime/
     raw_job_site_discovery.csv
     site_policy_evidence.csv
     site_screening_results.csv
+    ats_fingerprints.csv
+    source_relationships.csv
+    jd_lineage.csv
+    source_health.csv
+    freshness_checks.csv
+    operation_runs.csv
     raw_company_discovery.csv
     company_candidates.csv
     company_evidence.csv
-    source_discovery.csv
-    source_policy_evidence.csv
-    source_verification.csv
-    raw_jd_collection.csv
-    jd_collection_log.csv
-    jd_validation_errors.csv
-    quality_gate_report.csv
-    runs.csv
+    source_registry.csv
     errors.csv
+    runs.csv
 
   staging/
     job_site_registry_staging.csv
@@ -578,16 +334,16 @@ Initialize source registry template:
 python scripts/init_source_registry.py
 ```
 
-Validate existing local CSV outputs:
-
-```bash
-python scripts/run_validation.py
-```
-
 Validate pipeline templates:
 
 ```bash
 python scripts/validate_pipeline_templates.py
+```
+
+Run the local JD quality gate dry run:
+
+```bash
+python scripts/run_quality_gate_dryrun.py
 ```
 
 Run approved-source-only collection:
@@ -596,12 +352,4 @@ Run approved-source-only collection:
 python scripts/run_approved_collection.py
 ```
 
-If no approved crawl-eligible source exists in `master/source_registry_master.csv`, the command skips collection safely.
-
-Run the local JD quality gate:
-
-```bash
-python scripts/run_quality_gate_dryrun.py
-```
-
-This evaluates `data/raw/raw_jds.csv`, writes valid rows to `staging/jd_staging.csv`, and writes failures to `runtime/jd_validation_errors.csv`.
+If no approved crawl-eligible source exists in `master/source_registry_master.csv`, the command must skip collection safely.

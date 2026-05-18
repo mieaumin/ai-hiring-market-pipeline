@@ -1,0 +1,49 @@
+grades:
+  A:
+    meaning: Official API available.
+    approval_policy: Can be approved if policy and evidence are valid.
+    default_collection_eligibility: eligible_after_checks
+  B:
+    meaning: Public ATS/API endpoint available.
+    approval_policy: Can be approved if public access and policy evidence are valid.
+    default_collection_eligibility: requires_review
+  C:
+    meaning: Public company career page or public job page with acceptable robots and terms.
+    approval_policy: Can be approved only after careful human review.
+    default_collection_eligibility: requires_review
+  D:
+    meaning: Unclear policy, general scraping needed, or human/legal review required.
+    approval_policy: Must remain needs_manual_review or needs_legal_review.
+    default_collection_eligibility: not_eligible
+  E:
+    meaning: Login, CAPTCHA, anti-bot bypass, or prohibited automated collection required.
+    approval_policy: Reject.
+    default_collection_eligibility: excluded
+  F:
+    meaning: Unusable, blocked, or legally/policy-wise rejected.
+    approval_policy: Reject.
+    default_collection_eligibility: excluded
+
+approval_blockers:
+  - robots_disallow
+  - terms_prohibit_automated_collection
+  - login_required
+  - captcha_required
+  - high_anti_bot_risk
+  - critical_reuse_restriction
+  - missing_traceable_evidence
+
+approval_status_values:
+  - not_required
+  - pending
+  - approved
+  - rejected
+  - expired
+
+promotion_rules:
+  A: Requires valid policy evidence and basic automated checks.
+  B: Requires human approval before use.
+  C: Requires careful human review and explicit approval before use.
+  D: Cannot be approved until manual or legal review resolves ambiguity.
+  E: Rejected for MVP.
+  F: Prohibited or unusable.

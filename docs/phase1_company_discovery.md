@@ -1,12 +1,14 @@
-# Phase 1 - Company Discovery Registry Construction
+# Phase 1 - Korean AI Hiring Company Discovery
 
-Phase 1 builds an evidence-backed AI hiring company registry. It is a recall-first discovery and screening workflow, not a JD collection workflow.
+Phase 1 builds an evidence-backed Korean AI hiring company registry. It is a recall-first discovery and screening workflow, not a JD collection workflow.
 
 This project follows Biz-Voyager's broad discovery -> evidence review -> screening -> staging -> master philosophy, but applies stricter evidence gates before a company can be treated as relevant to the AI hiring market.
 
 This phase does not collect JDs. It does not crawl company websites, run scrapers, call APIs, automate browsers, use LLM APIs, or perform live collection. It creates a reviewable company candidate registry that can later support source discovery and JD collection.
 
 Companies should only move to master after evidence review. A raw company name is not an approved company record.
+
+The target is AI hiring likelihood in the Korean market, not generic AI company classification. A traditional enterprise, manufacturer, finance company, retailer, healthcare organization, or robotics team can be relevant if traceable evidence shows likely AI hiring demand.
 
 ## Phase 1 Pipeline
 
@@ -48,7 +50,7 @@ Process:
 - Define what counts as reliable evidence.
 - Define raw, staging, and master registry boundaries.
 - Define screening statuses and review responsibilities.
-- Define company evidence categories: `hiring_signal`, `business_ai_signal`, `tech_signal`, `market_signal`, `research_signal`, and `evidence_quality`.
+- Define company evidence categories such as `ai_job_presence_signal`, `ai_org_signal`, `ai_infrastructure_signal`, `ai_transformation_signal`, `business_ai_signal`, and `evidence_quality`.
 
 Output:
 - A documented company discovery strategy

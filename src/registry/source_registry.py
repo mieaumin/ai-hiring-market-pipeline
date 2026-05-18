@@ -24,14 +24,15 @@ def grade_source(row: dict) -> str:
     terms_status = str(row.get("terms_collection_policy", "")).lower()
     public_html_access = str(row.get("public_html_access", "")).lower()
 
+    if robots_status in {"blocked", "disallowed"} or str(row.get("access_status", "")).lower() == "blocked":
+        return "F"
     if (
         login_required
         or captcha_required
         or anti_bot_risk in {"high", "prohibited", "bypass_required"}
-        or robots_status in {"blocked", "disallowed"}
         or terms_status in {"prohibited", "not_allowed"}
     ):
-        return "F"
+        return "E"
     if api_required:
         return "D"
     if source_type in {"official", "official_public_source"}:
@@ -45,7 +46,7 @@ def grade_source(row: dict) -> str:
         and public_html_access == "true"
     ):
         return "C"
-    return "E"
+    return "D"
 
 
 def is_source_allowed(row: dict, automated_checks_passed: bool = False) -> bool:
