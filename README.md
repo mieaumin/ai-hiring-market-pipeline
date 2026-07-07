@@ -1,6 +1,6 @@
 # AI Hiring Market Pipeline
 
-Biz-Voyager-style AI hiring market data pipeline with stricter source compliance review for the HEDING x ModuLabs AIFFELTHON matching MVP and research project.
+AI hiring market data pipeline with stricter source compliance review for the HEDING x ModuLabs AIFFELTHON matching MVP and research project.
 
 This project targets the Korean AI hiring market. Target companies are Korean companies and Korea-relevant hiring organizations. Global ATS names such as Greenhouse, Lever, Ashby, Workday, SmartRecruiters, and SAP SuccessFactors are treated only as infrastructure patterns that Korean or Korea-relevant companies may use. They are not foreign-company or foreign-market collection targets.
 
